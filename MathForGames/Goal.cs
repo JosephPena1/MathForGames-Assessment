@@ -13,6 +13,9 @@ namespace MathForGames
     {
         private Actor _player;
 
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="x">Position on the x axis</param>
         /// <param name="y">Position on the y axis</param>
         /// <param name="icon">The symbol that will appear when drawn</param>
@@ -23,6 +26,9 @@ namespace MathForGames
             _player = player;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="x">Position on the x axis</param>
         /// <param name="y">Position on the y axis</param>
         /// <param name="rayColor">The color of the symbol that will appear when drawn to raylib</param>

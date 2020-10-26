@@ -22,14 +22,8 @@ namespace MathForGames
 
         public float Speed
         {
-            get
-            {
-                return _speed;
-            }
-            set
-            {
-                _speed = value;
-            }
+            get { return _speed; }
+            set { _speed = value; }
         }
 
         public Actor Target
@@ -40,30 +34,23 @@ namespace MathForGames
 
         public Vector2 PatrolPointA
         {
-            get
-            {
-                return _patrolPointA;
-            }
-            set
-            {
-                _patrolPointA = value;
-            }
+            get { return _patrolPointA; }
+            set { _patrolPointA = value; }
         }
 
         public Vector2 PatrolPointB
         {
-            get
-            {
-                return _patrolPointB;
-            }
-            set
-            {
-                _patrolPointB = value;
-            }
+            get { return _patrolPointB; }
+            set { _patrolPointB = value; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="x">Position on the x axis</param>
         /// <param name="y">Position on the y axis</param>
+        /// <param name="patrolPointA"></param>
+        /// <param name="patrolPointB"></param>
         /// <param name="icon">The symbol that will appear when drawn</param>
         /// <param name="color">The color of the symbol that will appear when drawn</param>
         public Enemy(float x, float y, Vector2 patrolPointA, Vector2 patrolPointB, char icon = ' ', ConsoleColor color = ConsoleColor.White)
@@ -74,9 +61,14 @@ namespace MathForGames
             _currentPoint = PatrolPointA;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="x">Position on the x axis</param>
         /// <param name="y">Position on the y axis</param>
         /// <param name="rayColor">The color of the symbol that will appear when drawn to raylib</param>
+        /// <param name="patrolPointA"></param>
+        /// <param name="patrolPointB"></param>
         /// <param name="icon">The symbol that will appear when drawn</param>
         /// <param name="color">The color of the symbol that will appear when drawn to the console</param>
         public Enemy(float x, float y, Color rayColor, Vector2 patrolPointA, Vector2 patrolPointB, char icon = ' ', ConsoleColor color = ConsoleColor.White)
@@ -101,12 +93,13 @@ namespace MathForGames
         {
             //Checks if the target has a value before continuing
             if (Target == null)
-                return true;
+                return false;
 
             //Find the vector representing the distance between the actor and its target
-            Vector2 direction = Position - Target.Position;
+            Vector2 direction = Target.Position - Position;
             //Get the magnitude of the distance vector
             float distance = direction.Magnitude;
+
             //Use the inverse cosine to find the angle of the dot product in radians
             float angle = (float)Math.Acos(Vector2.DotProduct(Forward, direction.Normalized));
 
@@ -142,7 +135,7 @@ namespace MathForGames
         {
             //If the target can be seen change the color to red and reset the player's position
             //If the target can't be seen change the color to blue
-            if(CheckTargetInSight(1.5f, 5))
+            if (CheckTargetInSight(1.5f, 5))
             {
                 _rayColor = Color.RED;
                 Target.Position = new Vector2();
@@ -151,8 +144,10 @@ namespace MathForGames
             {
                 _rayColor = Color.BLUE;
             }
+
             UpdatePatrolLocation();
             base.Update(deltaTime);
         }
+
     }
 }

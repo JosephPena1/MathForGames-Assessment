@@ -15,16 +15,13 @@ namespace MathForGames
 
         public float Speed
         {
-            get
-            {
-                return _speed;
-            }
-            set
-            {
-                _speed = value;
-            }
+            get { return _speed; }
+            set { _speed = value; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="x">Position on the x axis</param>
         /// <param name="y">Position on the y axis</param>
         /// <param name="icon">The symbol that will appear when drawn</param>
@@ -32,9 +29,12 @@ namespace MathForGames
         public Player(float x, float y, char icon = ' ', ConsoleColor color = ConsoleColor.White)
             : base(x, y, icon, color)
         {
-            
+
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="x">Position on the x axis</param>
         /// <param name="y">Position on the y axis</param>
         /// <param name="rayColor">The color of the symbol that will appear when drawn to raylib</param>
@@ -54,10 +54,10 @@ namespace MathForGames
             int yDirection = -Convert.ToInt32(Game.GetKeyDown((int)KeyboardKey.KEY_W))
                 + Convert.ToInt32(Game.GetKeyDown((int)KeyboardKey.KEY_S));
 
-            //Set the actors current velocity to be the a vector with the direction found scaled by the speed
+            //Set the actors current velocity to be the vector with the direction found scaled by the speed
             Velocity = new Vector2(xDirection, yDirection);
             Velocity = Velocity.Normalized * Speed;
-            
+
             base.Update(deltaTime);
         }
     }
