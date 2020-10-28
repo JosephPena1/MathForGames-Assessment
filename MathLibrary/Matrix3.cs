@@ -16,7 +16,7 @@ namespace MathLibrary
         }
 
         public Matrix3(float m11, float m12, float m13,
-                       float m21, float m22, float m23, 
+                       float m21, float m22, float m23,
                        float m31, float m32, float m33)
         {
             this.m11 = m11; this.m12 = m12; this.m13 = m13;

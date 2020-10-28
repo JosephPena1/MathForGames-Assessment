@@ -191,7 +191,7 @@ namespace MathForGames
             Player player = new Player(0, 1, Color.BLUE, '@', ConsoleColor.Red);
             Goal goal = new Goal(15, 10, Color.GREEN, player, 'G', ConsoleColor.Green);
 
-            //Initialize the enmies starting values
+            //Initialize the enemies' starting values
             enemyHigh.Speed = 2;
             enemyHigh.Target = player;
             enemyMid.Speed = 2;
