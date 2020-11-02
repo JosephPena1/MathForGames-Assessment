@@ -187,7 +187,7 @@ namespace MathForGames
             //Create the actors to add to our scene
             Enemy enemyHigh = new Enemy(0, 5, Color.GREEN, new Vector2(0, 5), new Vector2(30, 5), 'O', ConsoleColor.Green);
             Enemy enemyMid = new Enemy(10, 10, Color.GREEN, new Vector2(0, 10), new Vector2(30, 10), 'O', ConsoleColor.Green);
-            Enemy enemyLow = new Enemy(3, 20, Color.GREEN, new Vector2(0, 20), new Vector2(30, 20), 'O', ConsoleColor.Green);
+            Enemy enemyLow = new Enemy(3, 20, Color.GREEN, new Vector2(0, 15), new Vector2(30, 15), 'O', ConsoleColor.Green);
             Player player = new Player(0, 1, Color.BLUE, '@', ConsoleColor.Red);
             Goal goal = new Goal(15, 10, Color.GREEN, player, 'G', ConsoleColor.Green);
 
@@ -201,13 +201,14 @@ namespace MathForGames
 
             //Set player's starting speed
             player.Speed = 5;
+            player.SetScale(3, 3);
 
             //Add actors to the scenes
-            scene1.AddActor(goal);
+            //scene1.AddActor(goal);
             scene1.AddActor(player);
-            scene1.AddActor(enemyHigh);
+            /*scene1.AddActor(enemyHigh);
             scene1.AddActor(enemyMid);
-            scene1.AddActor(enemyLow);
+            scene1.AddActor(enemyLow);*/
             scene2.AddActor(player);
             
 
@@ -235,10 +236,11 @@ namespace MathForGames
         //Used to display objects and other info on the screen.
         public void Draw()
         {
+            Console.WriteLine(Raylib.GetMousePosition());
             Raylib.BeginDrawing();
 
             Raylib.ClearBackground(Color.BLACK);
-            Console.Clear();
+            //Console.Clear();
             _scenes[_currentSceneIndex].Draw();
 
             Raylib.EndDrawing();
