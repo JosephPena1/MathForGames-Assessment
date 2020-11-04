@@ -50,7 +50,6 @@ namespace MathForGames
 
         public override void Update(float deltaTime)
         {
-            //if mouse cursor is in players' FOV, follow cursor
 
             float xDirection = 0;
             float yDirection = 0;
@@ -67,15 +66,18 @@ namespace MathForGames
             }
             else if (Raylib.GetMousePosition().X >= 512 && Raylib.GetMousePosition().Y < 380)
             {
-                xDirection = Raylib.GetMousePosition().Y;
-                yDirection = -Raylib.GetMousePosition().X;
+                xDirection = Raylib.GetMousePosition().X;
+                yDirection = -Raylib.GetMousePosition().Y;
             }
             else
             {
                 xDirection = -Raylib.GetMousePosition().Y;
                 yDirection = -Raylib.GetMousePosition().X;
             }
-            SetRotation(rotation += (float)(Math.PI / 16) * deltaTime);
+
+            //SetRotation(rotation += (float)(Math.PI / 2) * deltaTime);
+            SetRotation(-(float)Math.Atan2(Velocity.Y, Velocity.X));
+
             //Set the actors current velocity to be the vector with the direction found scaled by the speed
             Velocity = new Vector2(xDirection, yDirection);
             Velocity = Velocity.Normalized * Speed;
@@ -85,7 +87,7 @@ namespace MathForGames
 
         public override void Draw ()
         {
-            _sprite.Draw(_transform);
+            _sprite.Draw(_localTransform);
             base.Draw();
         }
     }

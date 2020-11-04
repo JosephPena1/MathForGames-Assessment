@@ -39,7 +39,7 @@ namespace MathForGames
         {
             _player = player;
         }
-
+/*
         /// <summary>
         /// Checks to see if the player is in range of the goal.
         /// </summary>
@@ -57,6 +57,6 @@ namespace MathForGames
                 Game.SetGameOver(true);
 
             base.Update(deltaTime);
-        }
+        }*/
     }
 }
