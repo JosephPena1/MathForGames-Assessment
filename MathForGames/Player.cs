@@ -50,31 +50,47 @@ namespace MathForGames
 
         public override void Update(float deltaTime)
         {
+            //changes controls based on number. 1 = mouse, 2 = WASD.
+            int controls = 2;
 
             float xDirection = 0;
             float yDirection = 0;
 
-            if (Raylib.GetMousePosition().X >= 512 && Raylib.GetMousePosition().Y >= 380)
+            switch (controls)
             {
-                xDirection = Raylib.GetMousePosition().X;
-                yDirection = Raylib.GetMousePosition().Y;
-            }
-            else if (Raylib.GetMousePosition().X < 512 && Raylib.GetMousePosition().Y >= 380)
-            {
-                xDirection = -Raylib.GetMousePosition().Y;
-                yDirection = Raylib.GetMousePosition().X;
-            }
-            else if (Raylib.GetMousePosition().X >= 512 && Raylib.GetMousePosition().Y < 380)
-            {
-                xDirection = Raylib.GetMousePosition().X;
-                yDirection = -Raylib.GetMousePosition().Y;
-            }
-            else
-            {
-                xDirection = -Raylib.GetMousePosition().Y;
-                yDirection = -Raylib.GetMousePosition().X;
-            }
+                case 1:
 
+                    if (Raylib.GetMousePosition().X >= 512 && Raylib.GetMousePosition().Y >= 380)
+                    {
+                        xDirection = Raylib.GetMousePosition().X;
+                        yDirection = Raylib.GetMousePosition().Y;
+                    }
+                    else if (Raylib.GetMousePosition().X < 512 && Raylib.GetMousePosition().Y >= 380)
+                    {
+                        xDirection = -Raylib.GetMousePosition().Y;
+                        yDirection = Raylib.GetMousePosition().X;
+                    }
+                    else if (Raylib.GetMousePosition().X >= 512 && Raylib.GetMousePosition().Y < 380)
+                    {
+                        xDirection = Raylib.GetMousePosition().X;
+                        yDirection = -Raylib.GetMousePosition().Y;
+                    }
+                    else
+                    {
+                        xDirection = -Raylib.GetMousePosition().Y;
+                        yDirection = -Raylib.GetMousePosition().X;
+                    }
+                    break;
+
+                case 2:
+
+                    xDirection = -Convert.ToInt32(Game.GetKeyDown((int)KeyboardKey.KEY_A))
+                        + Convert.ToInt32(Game.GetKeyDown((int)KeyboardKey.KEY_D));
+                    yDirection = -Convert.ToInt32(Game.GetKeyDown((int)KeyboardKey.KEY_W))
+                        + Convert.ToInt32(Game.GetKeyDown((int)KeyboardKey.KEY_S));
+                    break;
+            }
+            
             //SetRotation(rotation += (float)(Math.PI / 2) * deltaTime);
             SetRotation(-(float)Math.Atan2(Velocity.Y, Velocity.X));
 
@@ -85,7 +101,7 @@ namespace MathForGames
             base.Update(deltaTime);
         }
 
-        public override void Draw ()
+        public override void Draw()
         {
             _sprite.Draw(_localTransform);
             base.Draw();

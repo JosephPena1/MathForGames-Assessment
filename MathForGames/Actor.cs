@@ -16,7 +16,7 @@ namespace MathForGames
         protected char _icon = ' ';
         protected Vector2 _velocity;
         protected Matrix3 _globalTransform;
-        protected Matrix3 _localTransform;
+        protected Matrix3 _localTransform = new Matrix3();
         private Matrix3 _translation = new Matrix3();
         private Matrix3 _rotation = new Matrix3();
         private Matrix3 _scale = new Matrix3();
@@ -24,6 +24,8 @@ namespace MathForGames
         protected Color _rayColor;
         protected Actor _parent;
         protected Actor[] _children = new Actor[0];
+        protected float _rotationAngle;
+        private float _collisionRadius;
         private Sprite _sprite;
 
         public bool Started { get; private set; }
@@ -155,6 +157,25 @@ namespace MathForGames
             _scale.m22 = y;
         }
 
+        /// <summary>
+        /// Checks to see if this actor overlaps with another.
+        /// </summary>
+        /// <param name="other">The actor that this actor is checking collision against</param>
+        /// <returns></returns>
+        public virtual bool CheckCollision(Actor other)
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// Use this to define game logic for this actors collision.
+        /// </summary>
+        /// <param name="other"></param>
+        public virtual void OnCollision(Actor other)
+        {
+
+        }
+
         private void UpdateGlobalTransform()
         {
             if (_parent != null)
@@ -182,8 +203,17 @@ namespace MathForGames
                 _children[i]._velocity = _children[i]._parent._velocity;
                 _children[i]._rotation = _children[i]._parent._rotation;
                 _children[i]._scale = _children[i]._parent._scale;
+                _children[i].SetTranslate(new Vector2( (float)Math.Cos(5), (float)Math.Sin(5)));
+
             }
         }
+
+        /*public void localRotate(float angle)
+        {
+            Matrix3 m = new Matrix3((float)Math.Cos(angle), (float)-Math.Sin(angle), 0, (float)Math.Sin(angle), (float)Math.Cos(angle), 0, 0, 0, 1);
+
+            m.m11 = _localTransform;
+        }*/
 
         public virtual void Start()
         {
@@ -192,8 +222,8 @@ namespace MathForGames
 
         public virtual void Update(float deltaTime)
         {
-            UpdateGlobalTransform();
             UpdateLocalTransform();
+            UpdateGlobalTransform();
             UpdateChild();
             UpdateFacing();
 
