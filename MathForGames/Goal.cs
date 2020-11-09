@@ -12,6 +12,7 @@ namespace MathForGames
     class Goal : Actor
     {
         private Actor _player;
+        private Sprite _sprite;
 
         /// <summary>
         /// 
@@ -23,6 +24,7 @@ namespace MathForGames
         public Goal(float x, float y, Actor player, char icon = ' ', ConsoleColor color = ConsoleColor.White)
             : base(x, y, icon, color)
         {
+            _sprite = new Sprite("Images/goal.png");
             _player = player;
         }
 
@@ -37,16 +39,17 @@ namespace MathForGames
         public Goal(float x, float y, Color rayColor, Actor player, char icon = ' ', ConsoleColor color = ConsoleColor.White)
             : base(x, y, rayColor, icon, color)
         {
+            _sprite = new Sprite("Images/goal.png");
             _player = player;
         }
-/*
+
         /// <summary>
         /// Checks to see if the player is in range of the goal.
         /// </summary>
         /// <returns></returns>
         private bool CheckPlayerDistance()
         {
-            float distance = (_player.Position - Position).Magnitude;
+            float distance = (_player.WorldPosition - WorldPosition).Magnitude;
             return distance <= 1;
         }
 
@@ -57,6 +60,13 @@ namespace MathForGames
                 Game.SetGameOver(true);
 
             base.Update(deltaTime);
-        }*/
+        }
+
+        public override void Draw()
+        {
+            _sprite.Draw(_localTransform);
+
+            base.Draw();
+        }
     }
 }

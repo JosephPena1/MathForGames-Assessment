@@ -6,7 +6,6 @@ using Raylib_cs;
 
 namespace MathForGames
 {
-
     /// <summary>
     /// This is the base class for all objects that will 
     /// be moved or interacted with in the game
@@ -25,6 +24,7 @@ namespace MathForGames
         protected Actor _parent;
         protected Actor[] _children = new Actor[0];
         protected float _rotationAngle;
+        private float _rotateCounter = 0f;
         private float _collisionRadius;
         private Sprite _sprite;
 
@@ -72,7 +72,6 @@ namespace MathForGames
         {
             _rayColor = Color.WHITE;
             _icon = icon;
-            _sprite = new Sprite("Images/player.png");
             _localTransform = new Matrix3();
             _globalTransform = new Matrix3();
             LocalPosition = new Vector2(x, y);
@@ -92,9 +91,9 @@ namespace MathForGames
         public Actor(float x, float y, Color rayColor, char icon = ' ', ConsoleColor color = ConsoleColor.White)
             : this(x, y, icon, color)
         {
-            _sprite = new Sprite("Images/player.png");
             _localTransform = new Matrix3();
             _globalTransform = new Matrix3();
+            Forward = new Vector2(1, 0);
             _rayColor = rayColor;
         }
 
@@ -110,6 +109,7 @@ namespace MathForGames
             tempArray[_children.Length] = child;
             _children = tempArray;
             child._parent = this;
+            //_children[i].Follow(_children[i]._parent.LocalPosition);
         }
 
         public bool RemoveChild(Actor child)
@@ -151,6 +151,12 @@ namespace MathForGames
             _rotation.m22 = (float)Math.Cos(radians);
         }
 
+        public void Rotate(float radians)
+        {
+            _rotationAngle += radians;
+            SetRotation(_rotationAngle);
+        }
+
         public void SetScale(float x, float y)
         {
             _scale.m11 = x;
@@ -164,6 +170,14 @@ namespace MathForGames
         /// <returns></returns>
         public virtual bool CheckCollision(Actor other)
         {
+            //if actor collides with actor call oncollision and return true.
+
+            /*if ()
+            {
+                OnCollision(other);
+                return true;
+            }*/
+
             return false;
         }
 
@@ -173,6 +187,7 @@ namespace MathForGames
         /// <param name="other"></param>
         public virtual void OnCollision(Actor other)
         {
+            //remove actor on hit
 
         }
 
@@ -193,7 +208,7 @@ namespace MathForGames
         {
             if (_velocity.Magnitude <= 0)
                 return;
-
+            Forward = Velocity.Normalized;
         }
 
         private void UpdateChild()
@@ -203,17 +218,33 @@ namespace MathForGames
                 _children[i]._velocity = _children[i]._parent._velocity;
                 _children[i]._rotation = _children[i]._parent._rotation;
                 _children[i]._scale = _children[i]._parent._scale;
-                _children[i].SetTranslate(new Vector2( (float)Math.Cos(5), (float)Math.Sin(5)));
-
+                _children[i]._sprite = _children[i]._parent._sprite;
             }
         }
 
-        /*public void localRotate(float angle)
+        public void Follow(Vector2 position)
         {
-            Matrix3 m = new Matrix3((float)Math.Cos(angle), (float)-Math.Sin(angle), 0, (float)Math.Sin(angle), (float)Math.Cos(angle), 0, 0, 0, 1);
+            //Find the direction that the actor should look in 
+            Vector2 direction = (position - LocalPosition).Normalized;
 
-            m.m11 = _localTransform;
-        }*/
+            //Use the dotproduct to find the angle the actor needs to rotate 
+            float dotProduct = Vector2.DotProduct(Forward, direction);
+            if (Math.Abs(dotProduct) > 1)
+                return;
+            float angle = (float)Math.Acos(dotProduct);
+
+            //Find a perpindicular vector to the direction 
+            Vector2 perpin = new Vector2(direction.Y, -direction.X);
+
+            //Find the dot product of the perpindicular vector and the current forward 
+            float perpinDot = Vector2.DotProduct(perpin, Forward);
+
+            //If the result isn't 0, use it to change the sign of the angle to be either positive or negative 
+            if (perpinDot != 0)
+                angle *= -perpinDot / Math.Abs(perpinDot);
+
+            Rotate(angle);
+        }
 
         public virtual void Start()
         {
@@ -222,10 +253,14 @@ namespace MathForGames
 
         public virtual void Update(float deltaTime)
         {
+            SetRotation(_rotateCounter);
+            _rotateCounter += 0.05f;
+            
             UpdateLocalTransform();
             UpdateGlobalTransform();
+
             UpdateChild();
-            UpdateFacing();
+            //SetRotation(-(float)Math.Atan2(Velocity.Y, Velocity.X));
 
             //Increase position by the current velocity
             LocalPosition += _velocity * deltaTime;
@@ -235,7 +270,6 @@ namespace MathForGames
         {
             //Draws the actor and a line indicating it facing to the raylib window.
             //Scaled to match console movement
-            _sprite.Draw(_localTransform);
 
             Raylib.DrawText(_icon.ToString(), (int)(LocalPosition.X * 32), (int)(LocalPosition.Y * 32), 32, _rayColor);
             Raylib.DrawLine(

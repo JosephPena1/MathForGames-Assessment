@@ -141,14 +141,14 @@ namespace MathForGames
             if (CheckTargetInSight(1.5f, 5))
             {
                 _rayColor = Color.RED;
-                Target.LocalPosition = new Vector2();
+                //Target.LocalPosition = new Vector2();
             }
             else
             {
                 _rayColor = Color.BLUE;
             }
 
-            UpdatePatrolLocation();
+            //UpdatePatrolLocation();
             base.Update(deltaTime);
         }
 
