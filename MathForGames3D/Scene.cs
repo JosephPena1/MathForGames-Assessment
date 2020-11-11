@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Raylib_cs;
 using MathLibrary;
 
-namespace MathForGames
+namespace MathForGames3D
 {
     class Scene
     {
         private Actor[] _actors;
-        private Matrix3 _tranform = new Matrix3();
+        private Matrix4 _tranform = new Matrix4();
 
-        public Matrix3 World
+        public Matrix4 World
         {
             get { return _tranform; }
         }

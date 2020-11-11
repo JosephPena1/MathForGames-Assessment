@@ -1,41 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
-using System.Threading;
-using MathLibrary;
 using Raylib_cs;
+using MathLibrary;
 
-namespace MathForGames
+namespace MathForGames3D
 {
     class Game
     {
-        private static bool _gameOver = false;
+        private static bool _gameOver;
         private static Scene[] _scenes;
         private static int _currentSceneIndex;
+        private Camera3D _camera = new Camera3D();
+
+        public static bool GameOver
+        {
+            get { return _gameOver; }
+            set { _gameOver = value; }
+        }
 
         public static int CurrentSceneIndex
         {
             get { return _currentSceneIndex; }
         }
 
-        public static ConsoleColor DefaultColor { get; set; } = ConsoleColor.White;
-
-        /// <summary>
-        /// Used to set the value of game over.
-        /// </summary>
-        /// <param name="value">If this value is true, the game will end</param>
-        public static void SetGameOver(bool value)
-        {
-            _gameOver = value;
-        }
-
-        /// <summary>
-        /// Returns the scene at the index given.
-        /// Returns an empty scene if the index is out of bounds
-        /// </summary>
-        /// <param name="index">The index of the desired scene</param>
-        /// <returns></returns>
         public static Scene GetScene(int index)
         {
             if (index < 0 || index > _scenes.Length)
@@ -144,95 +132,32 @@ namespace MathForGames
             _currentSceneIndex = index;
         }
 
-        /// <summary>
-        /// Returns true while a key is being pressed
-        /// </summary>
-        /// <param name="key">The ascii value of the key to check</param>
-        /// <returns></returns>
-        public static bool GetKeyDown(int key)
+        private void Start()
         {
-            return Raylib.IsKeyDown((KeyboardKey)key);
-        }
-
-        /// <summary>
-        /// Returns true while if key was pressed once
-        /// </summary>
-        /// <param name="key">The ascii value of the key to check</param>
-        /// <returns></returns>
-        public static bool GetKeyPressed(int key)
-        {
-            return Raylib.IsKeyPressed((KeyboardKey)key);
-        }
-
-        public Game()
-        {
-            _scenes = new Scene[0];
-        }
-
-        //Called when the game begins. Use this for initialization.
-        public void Start()
-        {
-            //Creates a new window for raylib
-            Raylib.InitWindow(1200, 900, "Math For Games");
+            Raylib.InitWindow(1024, 760, "Math For Game 3D");
             Raylib.SetTargetFPS(60);
 
-            //Set up console window
-            Console.CursorVisible = false;
-            Console.Title = "Math For Games";
+            _camera.position = new System.Numerics.Vector3(0.0f, 10.0f, 10.0f); // Camera position
+            _camera.target = new System.Numerics.Vector3(0.0f, 0.0f, 0.0f);     // Camera looking at point
+            _camera.up = new System.Numerics.Vector3(0.0f, 1.0f, 0.0f);         // Camera up vector (rotation towards target)
+            _camera.fovy = 45.0f;                                               // Camera Field-of-View Y
+            _camera.type = CameraType.CAMERA_PERSPECTIVE;                       // Camera mode type
 
-            //Create a new scene for our actors to exist in
             Scene scene1 = new Scene();
 
-            //Create the actors to add to our scene
-            Enemy enemy1 = new Enemy(5, 15, Color.GREEN, new Vector2(0, 5), new Vector2(30, 5), 'O', ConsoleColor.Green);
-            Enemy enemy2 = new Enemy(10, 10, Color.GREEN, new Vector2(0, 10), new Vector2(30, 10), 'O', ConsoleColor.Green);
-            Enemy enemy3 = new Enemy(15, 15, Color.GREEN, new Vector2(0, 15), new Vector2(30, 15), 'O', ConsoleColor.Green);
+            Actor testActor = new Actor(5, 5, 0, Color.BLUE, 'O');
 
-            Player player = new Player(0, 1, Color.BLUE, '@', ConsoleColor.Red);
-            Actor child = new Actor(0, 1, Color.BLUE, 'C', ConsoleColor.Red);
+            testActor.SetScale(5, 5, 5);
 
-            Goal goal = new Goal(100, 100, Color.GREEN, player, 'G', ConsoleColor.Green);
+            scene1.AddActor(testActor);
 
-            //Initialize the enemies' starting values
-            enemy1.Speed = 2;
-            enemy1.Target = player;
-            enemy2.Speed = 2;
-            enemy2.Target = player;
-            enemy3.Speed = 2;
-            enemy3.Target = player;
-
-            //Set player's starting speed
-            player.Speed = 5;
-            player.SetTranslate(new Vector2(5, 5));
-            player.SetScale(3, 3);
-            player.AddChild(enemy1);
-
-            goal.SetScale(3, 3);
-            goal.SetTranslate(new Vector2(15, 10));
-
-            //goal.AddChild(enemy1);
-
-            //Add actors to the scenes
-            scene1.AddActor(enemy1);
-
-            scene1.AddActor(player);
-            scene1.AddActor(child);
-
-            scene1.AddActor(goal);
-
-            //Sets the starting scene index and adds the scenes to the scenes array
             int startingSceneIndex = 0;
             startingSceneIndex = AddScene(scene1);
-
-            //Sets the current scene to be the starting scene index
             SetCurrentScene(startingSceneIndex);
+
         }
 
-        /// <summary>
-        /// Called every frame
-        /// </summary>
-        /// <param name="deltaTime">The time between each frame</param>
-        public void Update(float deltaTime)
+        private void Update(float deltaTime)
         {
             if (!_scenes[_currentSceneIndex].Started)
                 _scenes[_currentSceneIndex].Start();
@@ -240,47 +165,41 @@ namespace MathForGames
             _scenes[_currentSceneIndex].Update(deltaTime);
         }
 
-        //Used to display objects and other info on the screen.
-        public void Draw()
+        private void Draw()
         {
-            Console.WriteLine(Raylib.GetMousePosition());
             Raylib.BeginDrawing();
+            Raylib.BeginMode3D(_camera);
 
-            Raylib.ClearBackground(Color.BLACK);
-            //Console.Clear();
+            Raylib.ClearBackground(Color.RAYWHITE);
+            Raylib.DrawGrid(10, 1.0f);
             _scenes[_currentSceneIndex].Draw();
+            Raylib.DrawSphere(new System.Numerics.Vector3(0, 0, 0), 0.5f, Color.BLUE);
 
+            //_scenes[_currentSceneIndex].Draw();
+
+            Raylib.EndMode3D();
             Raylib.EndDrawing();
         }
 
-        //Called when the game ends.
-        public void End()
+        private void End()
         {
             if (_scenes[_currentSceneIndex].Started)
                 _scenes[_currentSceneIndex].End();
         }
 
-        //Handles all of the main game logic including the main game loop.
         public void Run()
         {
-            //Call start for all objects in game
             Start();
 
-            //Loops the game until either the game is set to be over or the window closes
             while (!_gameOver && !Raylib.WindowShouldClose())
             {
-                //Stores the current time between frames
                 float deltaTime = Raylib.GetFrameTime();
-                //Call update for all objects in game
                 Update(deltaTime);
-                //Call draw for all objects in game
                 Draw();
-                //Clear the input stream for the console window
-                while (Console.KeyAvailable)
-                    Console.ReadKey(true);
             }
 
             End();
         }
+
     }
 }

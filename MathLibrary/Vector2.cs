@@ -84,6 +84,5 @@ namespace MathLibrary
         {
             return new Vector2(lhs.X / scalar, lhs.Y / scalar);
         }
-
     }
 }

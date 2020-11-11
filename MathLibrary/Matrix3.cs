@@ -44,6 +44,51 @@ namespace MathLibrary
                 );
         }
 
+        /// <summary>
+        /// Creates a new Matrix that has been rotated by the given radians
+        /// </summary>
+        /// <param name="radians">The angle the new matrix will be rotated</param>
+        /// <returns></returns>
+        public static Matrix3 CreateRotation(float radians)
+        {
+            return new Matrix3
+                (
+                    (float)Math.Cos(radians), (float)Math.Sin(radians), 0,
+                    -(float)Math.Sin(radians), (float)Math.Cos(radians), 0,
+                    0, 0, 1
+                );
+        }
+
+        /// <summary>
+        /// Creates a new Matrix that has been translated by the given value
+        /// </summary>
+        /// <param name="position">The position of the new Matrix</param>
+        /// <returns></returns>
+        public static Matrix3 CreateTranslation(Vector2 position)
+        {
+            return new Matrix3
+                (
+                    1, 0, position.X,
+                    0, 1, position.Y,
+                    0, 0, 1
+                );
+        }
+
+        /// <summary>
+        /// Creates a new Matrix that has been scaled by the given value
+        /// </summary>
+        /// <param name="scale">The scale of the new Matrix</param>
+        /// <returns></returns>
+        public static Matrix3 CreateScale(Vector2 scale)
+        {
+            return new Matrix3
+                (
+                    scale.X, 0, 0,
+                    0, scale.Y, 0,
+                    0, 0, 1
+                );
+        }
+
         public static Matrix3 operator *(Matrix3 lhs, Matrix3 rhs)
         {
             return new Matrix3

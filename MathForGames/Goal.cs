@@ -49,7 +49,7 @@ namespace MathForGames
         /// <returns></returns>
         private bool CheckPlayerDistance()
         {
-            float distance = (_player.WorldPosition - WorldPosition).Magnitude;
+            float distance = (_player.GlobalPosition - GlobalPosition).Magnitude;
             return distance <= 1;
         }
 
@@ -64,7 +64,7 @@ namespace MathForGames
 
         public override void Draw()
         {
-            _sprite.Draw(_localTransform);
+            _sprite.Draw(_globalTransform);
 
             base.Draw();
         }

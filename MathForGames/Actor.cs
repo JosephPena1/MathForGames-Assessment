@@ -14,7 +14,7 @@ namespace MathForGames
     {
         protected char _icon = ' ';
         protected Vector2 _velocity;
-        protected Matrix3 _globalTransform;
+        protected Matrix3 _globalTransform = new Matrix3();
         protected Matrix3 _localTransform = new Matrix3();
         private Matrix3 _translation = new Matrix3();
         private Matrix3 _rotation = new Matrix3();
@@ -26,21 +26,22 @@ namespace MathForGames
         protected float _rotationAngle;
         private float _rotateCounter = 0f;
         private float _collisionRadius;
-        private Sprite _sprite;
 
         public bool Started { get; private set; }
 
         public Vector2 Forward
         {
-            get { return new Vector2(_translation.m11, _translation.m21).Normalized; }
+            get { return new Vector2(_globalTransform.m13, _globalTransform.m23).Normalized; }
             set
             {
-                _translation.m11 = value.X;
-                _translation.m21 = value.Y;
+                //direction = 
+                _translation.m13 = value.X;
+                _translation.m23 = value.Y;
+                //Lookat(direction);
             }
         }
 
-        public Vector2 WorldPosition
+        public Vector2 GlobalPosition
         {
             get { return new Vector2(_globalTransform.m13, _globalTransform.m23); }
         }
@@ -139,28 +140,22 @@ namespace MathForGames
 
         public void SetTranslate(Vector2 position)
         {
-            _translation.m13 = position.X;
-            _translation.m23 = position.Y;
+            _translation = Matrix3.CreateTranslation(position);
         }
 
         public void SetRotation(float radians)
         {
-            _rotation.m11 = (float)Math.Cos(radians);
-            _rotation.m12 = (float)Math.Sin(radians);
-            _rotation.m21 = -(float)Math.Sin(radians);
-            _rotation.m22 = (float)Math.Cos(radians);
+            _rotation = Matrix3.CreateRotation(radians);
         }
 
         public void Rotate(float radians)
         {
-            _rotationAngle += radians;
-            SetRotation(_rotationAngle);
+            _rotation *= Matrix3.CreateRotation(radians);
         }
 
         public void SetScale(float x, float y)
         {
-            _scale.m11 = x;
-            _scale.m22 = y;
+            _scale = Matrix3.CreateScale(new Vector2(x, y));
         }
 
         /// <summary>
@@ -191,53 +186,40 @@ namespace MathForGames
 
         }
 
-        private void UpdateGlobalTransform()
+        private void UpdateTransforms()
         {
+            _localTransform = _translation * _rotation * _scale;
+
             if (_parent != null)
                 _globalTransform = _parent._globalTransform * _localTransform;
             else
-                _globalTransform = _localTransform;
-        }
-
-        private void UpdateLocalTransform()
-        {
-            _localTransform = _translation * _rotation * _scale;
+                _globalTransform = Game.GetCurrentScene().World * _localTransform;
         }
 
         private void UpdateFacing()
         {
             if (_velocity.Magnitude <= 0)
                 return;
+
             Forward = Velocity.Normalized;
         }
 
-        private void UpdateChild()
-        {
-            for (var i = 0; i < _children.Length; i++)
-            {
-                _children[i]._velocity = _children[i]._parent._velocity;
-                _children[i]._rotation = _children[i]._parent._rotation;
-                _children[i]._scale = _children[i]._parent._scale;
-                _children[i]._sprite = _children[i]._parent._sprite;
-            }
-        }
-
-        public void Follow(Vector2 position)
+        public void Lookat(Vector2 position)
         {
             //Find the direction that the actor should look in 
             Vector2 direction = (position - LocalPosition).Normalized;
 
             //Use the dotproduct to find the angle the actor needs to rotate 
-            float dotProduct = Vector2.DotProduct(Forward, direction);
-            if (Math.Abs(dotProduct) > 1)
+            float dotProd = Vector2.DotProduct(Forward, direction);
+            if (Math.Abs(dotProd) > 1)
                 return;
-            float angle = (float)Math.Acos(dotProduct);
+            float angle = (float)Math.Acos(dotProd);
 
             //Find a perpindicular vector to the direction 
-            Vector2 perpin = new Vector2(direction.Y, -direction.X);
+            Vector2 perp = new Vector2(direction.Y, -direction.X);
 
             //Find the dot product of the perpindicular vector and the current forward 
-            float perpinDot = Vector2.DotProduct(perpin, Forward);
+            float perpinDot = Vector2.DotProduct(perp, Forward);
 
             //If the result isn't 0, use it to change the sign of the angle to be either positive or negative 
             if (perpinDot != 0)
@@ -253,14 +235,16 @@ namespace MathForGames
 
         public virtual void Update(float deltaTime)
         {
+
+            /*if (Velocity.Magnitude != 0)
+                SetRotation(-(float)Math.Atan2(Velocity.Y, Velocity.X));*/
+
             SetRotation(_rotateCounter);
             _rotateCounter += 0.05f;
             
-            UpdateLocalTransform();
-            UpdateGlobalTransform();
-
-            UpdateChild();
-            //SetRotation(-(float)Math.Atan2(Velocity.Y, Velocity.X));
+            UpdateTransforms();
+            //UpdateFacing();
+            
 
             //Increase position by the current velocity
             LocalPosition += _velocity * deltaTime;
@@ -271,22 +255,22 @@ namespace MathForGames
             //Draws the actor and a line indicating it facing to the raylib window.
             //Scaled to match console movement
 
-            Raylib.DrawText(_icon.ToString(), (int)(LocalPosition.X * 32), (int)(LocalPosition.Y * 32), 32, _rayColor);
+            Raylib.DrawText(_icon.ToString(), (int)(GlobalPosition.X * 32), (int)(GlobalPosition.Y * 32), 32, _rayColor);
             Raylib.DrawLine(
-                (int)(LocalPosition.X * 32),
-                (int)(LocalPosition.Y * 32),
-                (int)((LocalPosition.X + Forward.X) * 32),
-                (int)((LocalPosition.Y + Forward.Y) * 32),
+                (int)(GlobalPosition.X * 32),
+                (int)(GlobalPosition.Y * 32),
+                (int)((GlobalPosition.X + Forward.X) * 32),
+                (int)((GlobalPosition.Y + Forward.Y) * 32),
                 _rayColor
             );
             //Changes the color of the console text to be this actors color
             Console.ForegroundColor = _color;
 
             //Only draws the actor on the console if it is within the bounds of the window
-            if (LocalPosition.X >= Console.WindowWidth && LocalPosition.X < Console.WindowWidth
-                && LocalPosition.Y <= 0 && LocalPosition.Y < Console.WindowHeight)
+            if (GlobalPosition.X >= Console.WindowWidth && GlobalPosition.X < Console.WindowWidth
+                && GlobalPosition.Y <= 0 && GlobalPosition.Y < Console.WindowHeight)
             {
-                Console.SetCursorPosition((int)LocalPosition.X, (int)LocalPosition.Y);
+                Console.SetCursorPosition((int)GlobalPosition.X, (int)GlobalPosition.Y);
                 Console.Write(_icon);
             }
 
