@@ -50,18 +50,71 @@ namespace MathLibrary
         }
 
         /// <summary>
-        /// Creates a new Matrix that has been rotated by the given radians
+        /// Creates a new Matrix that has been rotated on the X-axis by the given radians
         /// </summary>
         /// <param name="radians">The angle the new matrix will be rotated</param>
         /// <returns></returns>
-        public static Matrix4 CreateRotation(float radians)
+        public static Matrix4 CreateRotationX(float radians)
         {
             return new Matrix4
                 (
-                    (float)Math.Cos(radians), (float)Math.Sin(radians), 0, 0,
-                    -(float)Math.Sin(radians), (float)Math.Cos(radians), 0, 0,
+                    //column major
+                    1, 0, 0, 0,
+                    0, (float)Math.Cos(radians), -(float)Math.Sin(radians), 0,
+                    0, (float)Math.Sin(radians), (float)Math.Cos(radians), 0,
+                    0, 0, 0, 1
+
+                    //row major
+                    /*1, 0, 0, 0,
+                    0, (float)Math.Cos(radians), (float)Math.Sin(radians), 0,
+                    0, -(float)Math.Sin(radians), (float)Math.Cos(radians), 0,
+                    0, 0, 0, 1*/
+                );
+        }
+
+        /// <summary>
+        /// Creates a new Matrix that has been rotated on the Y-axis by the given radians
+        /// </summary>
+        /// <param name="radians">The angle the new matrix will be rotated</param>
+        /// <returns></returns>
+        public static Matrix4 CreateRotationY(float radians)
+        {
+            return new Matrix4
+                (
+                    //column major
+                    (float)Math.Cos(radians), 0, (float)Math.Sin(radians), 0,
+                    0, 1, 0, 0,
+                    -(float)Math.Sin(radians), 0, (float)Math.Cos(radians), 0,
+                    0, 0, 0, 1
+
+                    //row major
+                    /*(float)Math.Cos(radians), 0, -(float)Math.Sin(radians), 0,
+                    0, 1, 0, 0,
+                    (float)Math.Sin(radians), 0, (float)Math.Cos(radians), 0,
+                    0, 0, 0, 1*/
+                );
+        }
+
+        /// <summary>
+        /// Creates a new Matrix that has been rotated on the Z-axis by the given radians
+        /// </summary>
+        /// <param name="radians">The angle the new matrix will be rotated</param>
+        /// <returns></returns>
+        public static Matrix4 CreateRotationZ(float radians)
+        {
+            return new Matrix4
+                (
+                    //column major
+                    (float)Math.Cos(radians), -(float)Math.Sin(radians), 0, 0,
+                    (float)Math.Sin(radians), (float)Math.Cos(radians), 0, 0,
                     0, 0, 1, 0,
                     0, 0, 0, 1
+
+                    //row major
+                    /*(float)Math.Cos(radians), (float)Math.Sin(radians), 0, 0,
+                    -(float)Math.Sin(radians), (float)Math.Cos(radians), 0, 0,
+                    0, 0, 1, 0,
+                    0, 0, 0, 1*/
                 );
         }
 
@@ -111,33 +164,40 @@ namespace MathLibrary
                     lhs.m11 * rhs.m14 + lhs.m12 * rhs.m24 + lhs.m13 * rhs.m34 + lhs.m14 * rhs.m44,
 
                     //Row2, Column1
-                    lhs.m21 * rhs.m11 + lhs.m22 * rhs.m21 + lhs.m23 * rhs.m31 + lhs.m24 * rhs.m44,
+                    lhs.m21 * rhs.m11 + lhs.m22 * rhs.m21 + lhs.m23 * rhs.m31 + lhs.m24 * rhs.m41,
                     //Row2, Column2
-                    lhs.m21 * rhs.m12 + lhs.m22 * rhs.m22 + lhs.m23 * rhs.m32 + lhs.m24 * rhs.m44,
+                    lhs.m21 * rhs.m12 + lhs.m22 * rhs.m22 + lhs.m23 * rhs.m32 + lhs.m24 * rhs.m42,
                     //Row2, Column3
-                    lhs.m21 * rhs.m13 + lhs.m22 * rhs.m23 + lhs.m23 * rhs.m33 + lhs.m24 * rhs.m44,
+                    lhs.m21 * rhs.m13 + lhs.m22 * rhs.m23 + lhs.m23 * rhs.m33 + lhs.m24 * rhs.m43,
                     //row2, column4
                     lhs.m21 * rhs.m14 + lhs.m22 * rhs.m24 + lhs.m23 * rhs.m34 + lhs.m24 * rhs.m44,
 
                     //Row3, Column1
-                    lhs.m31 * rhs.m11 + lhs.m32 * rhs.m21 + lhs.m33 * rhs.m31 + lhs.m34 * rhs.m44,
+                    lhs.m31 * rhs.m11 + lhs.m32 * rhs.m21 + lhs.m33 * rhs.m31 + lhs.m34 * rhs.m41,
                     //Row3, Column2
-                    lhs.m31 * rhs.m12 + lhs.m32 * rhs.m22 + lhs.m33 * rhs.m32 + lhs.m34 * rhs.m44,
+                    lhs.m31 * rhs.m12 + lhs.m32 * rhs.m22 + lhs.m33 * rhs.m32 + lhs.m34 * rhs.m42,
                     //Row3, Column3
-                    lhs.m31 * rhs.m13 + lhs.m32 * rhs.m23 + lhs.m33 * rhs.m33 + lhs.m34 * rhs.m44,
+                    lhs.m31 * rhs.m13 + lhs.m32 * rhs.m23 + lhs.m33 * rhs.m33 + lhs.m34 * rhs.m43,
                     //row3, column4
                     lhs.m31 * rhs.m14 + lhs.m32 * rhs.m24 + lhs.m33 * rhs.m34 + lhs.m34 * rhs.m44,
 
                     //Row4, Column1
-                    lhs.m41 * rhs.m11 + lhs.m42 * rhs.m21 + lhs.m43 * rhs.m31 + lhs.m44 * rhs.m44,
+                    lhs.m41 * rhs.m11 + lhs.m42 * rhs.m21 + lhs.m43 * rhs.m31 + lhs.m44 * rhs.m41,
                     //Row4, Column2
-                    lhs.m41 * rhs.m12 + lhs.m42 * rhs.m22 + lhs.m43 * rhs.m32 + lhs.m44 * rhs.m44,
+                    lhs.m41 * rhs.m12 + lhs.m42 * rhs.m22 + lhs.m43 * rhs.m32 + lhs.m44 * rhs.m42,
                     //Row4, Column3
-                    lhs.m41 * rhs.m13 + lhs.m42 * rhs.m23 + lhs.m43 * rhs.m33 + lhs.m44 * rhs.m44,
+                    lhs.m41 * rhs.m13 + lhs.m42 * rhs.m23 + lhs.m43 * rhs.m33 + lhs.m44 * rhs.m43,
                     //row4, column4
                     lhs.m41 * rhs.m14 + lhs.m42 * rhs.m24 + lhs.m43 * rhs.m34 + lhs.m44 * rhs.m44
                 );
         }
 
+        public static Vector4 operator *(Matrix4 lhs, Vector4 rhs)
+        {
+            return new Vector4((rhs.X * lhs.m11) + (rhs.Y * lhs.m12) + (rhs.Z * lhs.m13) + (rhs.W * lhs.m14),
+                               (rhs.X * lhs.m21) + (rhs.Y * lhs.m22) + (rhs.Z * lhs.m23) + (rhs.W * lhs.m24),
+                               (rhs.X * lhs.m31) + (rhs.Y * lhs.m32) + (rhs.Z * lhs.m33) + (rhs.W * lhs.m34),
+                               (rhs.X * lhs.m41) + (rhs.Y * lhs.m42) + (rhs.Z * lhs.m43) + (rhs.W * lhs.m44));
+        }
     }
 }

@@ -173,7 +173,7 @@ namespace MathForGames
         public void Start()
         {
             //Creates a new window for raylib
-            Raylib.InitWindow(1200, 900, "Math For Games");
+            Raylib.InitWindow(1200, 760, "Math For Games");
             Raylib.SetTargetFPS(60);
 
             //Set up console window
@@ -247,7 +247,6 @@ namespace MathForGames
             Raylib.BeginDrawing();
 
             Raylib.ClearBackground(Color.BLACK);
-            //Console.Clear();
             _scenes[_currentSceneIndex].Draw();
 
             Raylib.EndDrawing();
@@ -282,5 +281,6 @@ namespace MathForGames
 
             End();
         }
+
     }
 }

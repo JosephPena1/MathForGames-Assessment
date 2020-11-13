@@ -154,7 +154,6 @@ namespace MathForGames3D
             int startingSceneIndex = 0;
             startingSceneIndex = AddScene(scene1);
             SetCurrentScene(startingSceneIndex);
-
         }
 
         private void Update(float deltaTime)
@@ -171,11 +170,9 @@ namespace MathForGames3D
             Raylib.BeginMode3D(_camera);
 
             Raylib.ClearBackground(Color.RAYWHITE);
-            Raylib.DrawGrid(10, 1.0f);
             _scenes[_currentSceneIndex].Draw();
+            Raylib.DrawGrid(10, 1.0f);
             Raylib.DrawSphere(new System.Numerics.Vector3(0, 0, 0), 0.5f, Color.BLUE);
-
-            //_scenes[_currentSceneIndex].Draw();
 
             Raylib.EndMode3D();
             Raylib.EndDrawing();

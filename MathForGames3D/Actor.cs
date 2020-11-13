@@ -23,19 +23,6 @@ namespace MathForGames3D
 
         public bool Started { get; private set; }
 
-        public Vector3 Forward
-        {
-            get { return new Vector3(_globalTransform.m13, _globalTransform.m23, _globalTransform.m33).Normalized; }
-            set
-            {
-                //direction = 
-                _translation.m13 = value.X;
-                _translation.m23 = value.Y;
-                _translation.m33 = value.Z;
-                //Lookat(direction);
-            }
-        }
-
         public Vector3 GlobalPosition
         {
             get { return new Vector3(_globalTransform.m13, _globalTransform.m23, _globalTransform.m33); }
@@ -66,13 +53,12 @@ namespace MathForGames3D
         /// <param name="color">The color of the symbol that will appear when drawn</param>
         public Actor(float y, float x, float z, char icon = ' ')
         {
-            _rayColor = Color.WHITE;
-            _icon = icon;
             _localTransform = new Matrix4();
             _globalTransform = new Matrix4();
             LocalPosition = new Vector3(x, y, z);
             _velocity = new Vector3();
-            Forward = new Vector3(1, 0, 0);
+            _rayColor = Color.WHITE;
+            _icon = icon;
         }
 
         /// <summary>
@@ -89,8 +75,9 @@ namespace MathForGames3D
             _localTransform = new Matrix4();
             _globalTransform = new Matrix4();
             LocalPosition = new Vector3(x, y, z);
-            Forward = new Vector3(1, 0, 0);
+            _velocity = new Vector3();
             _rayColor = rayColor;
+            _icon = icon;
         }
 
         public void AddChild(Actor child)
@@ -137,15 +124,25 @@ namespace MathForGames3D
             _translation = Matrix4.CreateTranslation(position);
         }
 
-        public void SetRotation(float radians)
+        public void SetRotationX(float radians)
         {
-            _rotation = Matrix4.CreateRotation(radians);
+            _rotation = Matrix4.CreateRotationX(radians);
         }
 
-        public void Rotate(float radians)
+        public void SetRotationY(float radians)
+        {
+            _rotation = Matrix4.CreateRotationY(radians);
+        }
+
+        public void SetRotationZ(float radians)
+        {
+            _rotation = Matrix4.CreateRotationZ(radians);
+        }
+
+        /*public void Rotate(float radians)
         {
             _rotation *= Matrix4.CreateRotation(radians);
-        }
+        }*/
 
         public void SetScale(float x, float y, float z)
         {
@@ -162,30 +159,6 @@ namespace MathForGames3D
                 _globalTransform = Game.GetCurrentScene().World * _localTransform;
         }
 
-        public void Lookat(Vector3 position)
-        {
-            //Find the direction that the actor should look in 
-            Vector3 direction = (position - LocalPosition).Normalized;
-
-            //Use the dotproduct to find the angle the actor needs to rotate 
-            float dotProd = Vector3.DotProduct(Forward, direction);
-            if (Math.Abs(dotProd) > 1)
-                return;
-            float angle = (float)Math.Acos(dotProd);
-
-            //Find a perpindicular vector to the direction 
-            Vector3 perp = new Vector3(direction.Y, -direction.X, 0);
-
-            //Find the dot product of the perpindicular vector and the current forward 
-            float perpinDot = Vector3.DotProduct(perp, Forward);
-
-            //If the result isn't 0, use it to change the sign of the angle to be either positive or negative 
-            if (perpinDot != 0)
-                angle *= -perpinDot / Math.Abs(perpinDot);
-
-            Rotate(angle);
-        }
-
         public virtual void Start()
         {
             Started = true;
@@ -193,7 +166,7 @@ namespace MathForGames3D
 
         public virtual void Update(float deltaTime)
         {
-            SetRotation(_rotateCounter);
+            //SetRotation(_rotateCounter);
             _rotateCounter += 0.05f;
 
             UpdateTransforms();
@@ -207,13 +180,6 @@ namespace MathForGames3D
             //Draws the actor and a line indicating it facing to the raylib window.
             //Scaled to match console movement
             Raylib.DrawText(_icon.ToString(), (int)(GlobalPosition.X * 32), (int)(GlobalPosition.Y * 32), 32, _rayColor);
-            Raylib.DrawLine(
-                (int)(GlobalPosition.X * 32),
-                (int)(GlobalPosition.Y * 32),
-                (int)((GlobalPosition.X + Forward.X) * 32),
-                (int)((GlobalPosition.Y + Forward.Y) * 32),
-                _rayColor
-            );
 
             //Only draws the actor on the console if it is within the bounds of the window
             if (GlobalPosition.X >= Console.WindowWidth && GlobalPosition.X < Console.WindowWidth

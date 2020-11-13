@@ -116,5 +116,12 @@ namespace MathLibrary
                 );
         }
 
+        public static Vector3 operator *(Matrix3 lhs, Vector3 rhs)
+        {
+            return new Vector3((rhs.X * lhs.m11) + (rhs.Y * lhs.m12) + (rhs.Z * lhs.m13),
+                               (rhs.X * lhs.m21) + (rhs.Y * lhs.m22) + (rhs.Z * lhs.m23),
+                               (rhs.X * lhs.m31) + (rhs.Y * lhs.m32) + (rhs.Z * lhs.m33));
+        }
+
     }
 }
