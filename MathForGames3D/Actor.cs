@@ -8,6 +8,11 @@ namespace MathForGames3D
 {
     class Actor
     {
+        enum Shape
+        {
+            SPHERE,
+            CUBE
+        }
         protected char _icon = ' ';
         protected Vector3 _velocity;
         protected Matrix4 _globalTransform = new Matrix4();
@@ -20,6 +25,7 @@ namespace MathForGames3D
         protected Actor[] _children = new Actor[0];
         protected float _rotationAngle;
         private float _rotateCounter = 0f;
+        private Shape _shape;
 
         public bool Started { get; private set; }
 
@@ -51,7 +57,7 @@ namespace MathForGames3D
         /// <param name="x">Position on the y axis</param>
         /// <param name="icon">The symbol that will appear when drawn</param>
         /// <param name="color">The color of the symbol that will appear when drawn</param>
-        public Actor(float y, float x, float z, char icon = ' ')
+        public Actor(float y, float x, float z, Color rayColor, Shape shape, char icon = ' ')
         {
             _localTransform = new Matrix4();
             _globalTransform = new Matrix4();
@@ -69,7 +75,7 @@ namespace MathForGames3D
         /// <param name="rayColor">The color of the symbol that will appear when drawn to raylib</param>
         /// <param name="icon">The symbol that will appear when drawn</param>
         /// <param name="color">The color of the symbol that will appear when drawn</param>
-        public Actor(float x, float y, float z, Color rayColor, char icon = ' ')
+        public Actor(float x, float y, float z, Color rayColor, Shape shape, char icon = ' ')
             : this(x, y, icon)
         {
             _localTransform = new Matrix4();
@@ -78,6 +84,7 @@ namespace MathForGames3D
             _velocity = new Vector3();
             _rayColor = rayColor;
             _icon = icon;
+            _shape = shape;
         }
 
         public void AddChild(Actor child)
@@ -157,6 +164,19 @@ namespace MathForGames3D
                 _globalTransform = _parent._globalTransform * _localTransform;
             else
                 _globalTransform = Game.GetCurrentScene().World * _localTransform;
+        }
+
+        private void DrawShape()
+        {
+            switch (_shape)
+            {
+                case Shape.SPHERE:
+                    Raylib.DrawSphere(new System.Numerics.Vector3(GlobalPosition.X, GlobalPosition.Y, GlobalPosition.Z), 5, Color.BLUE);
+                    break;
+                case Shape.CUBE:
+                    Raylib.DrawCube(new System.Numerics.Vector3(GlobalPosition.X, GlobalPosition.Y, GlobalPosition.Z), 5, 5, 5, Color.BLACK);
+                    break;
+            }
         }
 
         public virtual void Start()

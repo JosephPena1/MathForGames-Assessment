@@ -56,10 +56,18 @@ namespace MathForGames
         public override void Update(float deltaTime)
         {
             //If the player is in range of the goal, end the game
-            if (CheckPlayerDistance())
+            if (CheckCollision(_collisionTarget))
                 Game.SetGameOver(true);
 
             base.Update(deltaTime);
+        }
+
+        public override void OnCollision(Actor actor)
+        {
+            if (actor is Player && _seconds > 1)
+                Game.SetGameOver(true);
+
+            base.OnCollision(actor);
         }
 
         public override void Draw()

@@ -11,8 +11,15 @@ namespace MathForGames
     /// </summary>
     class Player : Actor
     {
+        enum Controls
+        {
+            MOUSE,
+            WASD
+        }
+
         private float _speed = 1;
         private float rotation;
+        private Controls _controls = Controls.WASD;
 
         public float Speed
         {
@@ -51,14 +58,14 @@ namespace MathForGames
         public override void Update(float deltaTime)
         {
             //changes controls based on number. 1 = mouse, 2 = WASD.
-            int controls = 2;
+            //int controls = 2;
 
             float xDirection = 0;
             float yDirection = 0;
 
-            switch (controls)
+            switch (_controls)
             {
-                case 1:
+                case Controls.MOUSE:
 
                     if (Raylib.GetMousePosition().X >= 512 && Raylib.GetMousePosition().Y >= 380)
                     {
@@ -82,23 +89,51 @@ namespace MathForGames
                     }
                     break;
 
-                case 2:
+                case Controls.WASD:
 
                     xDirection = -Convert.ToInt32(Game.GetKeyDown((int)KeyboardKey.KEY_A))
                         + Convert.ToInt32(Game.GetKeyDown((int)KeyboardKey.KEY_D));
                     yDirection = -Convert.ToInt32(Game.GetKeyDown((int)KeyboardKey.KEY_W))
                         + Convert.ToInt32(Game.GetKeyDown((int)KeyboardKey.KEY_S));
                     break;
+                
             }
-            
-            //SetRotation(rotation += (float)(Math.PI / 2) * deltaTime);
-            
+
+            /*float scaleX = 1;
+            float scaleY = 1;
+            if (Game.GetKeyDown((int)KeyboardKey.KEY_LEFT))
+            {
+                scaleX -= 1;
+            }
+            else if(Game.GetKeyDown((int)KeyboardKey.KEY_RIGHT))
+            {
+                scaleX += 1;
+            }
+            else if (Game.GetKeyDown((int)KeyboardKey.KEY_UP))
+            {
+                scaleY += 1;
+            }
+            else if (Game.GetKeyDown((int)KeyboardKey.KEY_DOWN))
+            {
+                scaleY -= 1;
+            }
+            SetScale(scaleX, scaleY);*/
 
             //Set the actors current velocity to be the vector with the direction found scaled by the speed
             Velocity = new Vector2(xDirection, yDirection);
             Velocity = Velocity.Normalized * Speed;
 
+            CheckCollision(_collisionTarget);
+
             base.Update(deltaTime);
+        }
+
+        public override void OnCollision(Actor actor)
+        {
+            if (actor is Enemy && _seconds > 5)
+                Game.SetGameOver(true);
+
+            base.OnCollision(actor);
         }
 
         public override void Draw()

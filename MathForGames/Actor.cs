@@ -12,6 +12,8 @@ namespace MathForGames
     /// </summary>
     class Actor
     {
+        protected int _seconds = 0;
+        private float _totalFrames = 0f;
         protected char _icon = ' ';
         protected Vector2 _velocity;
         protected Matrix3 _globalTransform = new Matrix3();
@@ -24,20 +26,19 @@ namespace MathForGames
         protected Actor _parent;
         protected Actor[] _children = new Actor[0];
         protected float _rotationAngle;
-        private float _rotateCounter = 0f;
-        private float _collisionRadius;
+        protected float _rotateCounter = 0f;
+        private float _collisionRadius = 1f;
+        protected Actor _collisionTarget;
 
         public bool Started { get; private set; }
 
         public Vector2 Forward
         {
-            get { return new Vector2(_globalTransform.m13, _globalTransform.m23).Normalized; }
+            get { return new Vector2(_globalTransform.m11, _globalTransform.m21); }
             set
             {
-                //direction = 
-                _translation.m13 = value.X;
-                _translation.m23 = value.Y;
-                //Lookat(direction);
+                Vector2 lookPosition = LocalPosition + value.Normalized;
+                LookAt(lookPosition); LookAt(lookPosition);
             }
         }
 
@@ -163,15 +164,17 @@ namespace MathForGames
         /// </summary>
         /// <param name="other">The actor that this actor is checking collision against</param>
         /// <returns></returns>
-        public virtual bool CheckCollision(Actor other)
+        public virtual bool CheckCollision(Actor actor)
         {
-            //if actor collides with actor call oncollision and return true.
+            //if actor collides with actor call OnCollision and return true.
+            if (actor == null)
+                return false;
 
-            /*if ()
+            if (actor._collisionRadius + _collisionRadius > (actor.GlobalPosition - GlobalPosition).Magnitude && actor != this)
             {
-                OnCollision(other);
+                OnCollision(actor);
                 return true;
-            }*/
+            }
 
             return false;
         }
@@ -180,10 +183,15 @@ namespace MathForGames
         /// Use this to define game logic for this actors collision.
         /// </summary>
         /// <param name="other"></param>
-        public virtual void OnCollision(Actor other)
+        public virtual void OnCollision(Actor actor)
         {
-            //remove actor on hit
+            //Vector2 direction = actor.GlobalPosition - GlobalPosition;
+            //actor.SetTranslate(actor.LocalPosition + direction.Normalized);
+        }
 
+        public void SetCollisionTarget(Actor actor)
+        {
+            _collisionTarget = actor;
         }
 
         private void UpdateTransforms()
@@ -204,7 +212,7 @@ namespace MathForGames
             Forward = Velocity.Normalized;
         }
 
-        public void Lookat(Vector2 position)
+        public void LookAt(Vector2 position)
         {
             //Find the direction that the actor should look in 
             Vector2 direction = (position - LocalPosition).Normalized;
@@ -228,6 +236,16 @@ namespace MathForGames
             Rotate(angle);
         }
 
+        public void CheckInvincible()
+        {
+            _totalFrames++;
+            if (_totalFrames == 60)
+            {
+                _seconds++;
+                _totalFrames = 0;
+            }
+        }
+
         public virtual void Start()
         {
             Started = true;
@@ -243,8 +261,10 @@ namespace MathForGames
             _rotateCounter += 0.05f;
             
             UpdateTransforms();
-            //UpdateFacing();
-            
+
+            UpdateFacing();
+
+            CheckInvincible();
 
             //Increase position by the current velocity
             LocalPosition += _velocity * deltaTime;

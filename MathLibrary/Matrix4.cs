@@ -58,17 +58,11 @@ namespace MathLibrary
         {
             return new Matrix4
                 (
-                    //column major
-                    1, 0, 0, 0,
-                    0, (float)Math.Cos(radians), -(float)Math.Sin(radians), 0,
-                    0, (float)Math.Sin(radians), (float)Math.Cos(radians), 0,
-                    0, 0, 0, 1
-
                     //row major
-                    /*1, 0, 0, 0,
+                    1, 0, 0, 0,
                     0, (float)Math.Cos(radians), (float)Math.Sin(radians), 0,
                     0, -(float)Math.Sin(radians), (float)Math.Cos(radians), 0,
-                    0, 0, 0, 1*/
+                    0, 0, 0, 1
                 );
         }
 
@@ -81,17 +75,11 @@ namespace MathLibrary
         {
             return new Matrix4
                 (
-                    //column major
-                    (float)Math.Cos(radians), 0, (float)Math.Sin(radians), 0,
-                    0, 1, 0, 0,
-                    -(float)Math.Sin(radians), 0, (float)Math.Cos(radians), 0,
-                    0, 0, 0, 1
-
                     //row major
-                    /*(float)Math.Cos(radians), 0, -(float)Math.Sin(radians), 0,
+                    (float)Math.Cos(radians), 0, -(float)Math.Sin(radians), 0,
                     0, 1, 0, 0,
                     (float)Math.Sin(radians), 0, (float)Math.Cos(radians), 0,
-                    0, 0, 0, 1*/
+                    0, 0, 0, 1
                 );
         }
 
@@ -104,17 +92,11 @@ namespace MathLibrary
         {
             return new Matrix4
                 (
-                    //column major
-                    (float)Math.Cos(radians), -(float)Math.Sin(radians), 0, 0,
-                    (float)Math.Sin(radians), (float)Math.Cos(radians), 0, 0,
-                    0, 0, 1, 0,
-                    0, 0, 0, 1
-
                     //row major
-                    /*(float)Math.Cos(radians), (float)Math.Sin(radians), 0, 0,
+                    (float)Math.Cos(radians), (float)Math.Sin(radians), 0, 0,
                     -(float)Math.Sin(radians), (float)Math.Cos(radians), 0, 0,
                     0, 0, 1, 0,
-                    0, 0, 0, 1*/
+                    0, 0, 0, 1
                 );
         }
 
@@ -194,10 +176,11 @@ namespace MathLibrary
 
         public static Vector4 operator *(Matrix4 lhs, Vector4 rhs)
         {
-            return new Vector4((rhs.X * lhs.m11) + (rhs.Y * lhs.m12) + (rhs.Z * lhs.m13) + (rhs.W * lhs.m14),
-                               (rhs.X * lhs.m21) + (rhs.Y * lhs.m22) + (rhs.Z * lhs.m23) + (rhs.W * lhs.m24),
-                               (rhs.X * lhs.m31) + (rhs.Y * lhs.m32) + (rhs.Z * lhs.m33) + (rhs.W * lhs.m34),
-                               (rhs.X * lhs.m41) + (rhs.Y * lhs.m42) + (rhs.Z * lhs.m43) + (rhs.W * lhs.m44));
+            return new Vector4(
+                (rhs.X * lhs.m11) + (rhs.Y * lhs.m12) + (rhs.Z * lhs.m13) + (rhs.W * lhs.m14),
+                (rhs.X * lhs.m21) + (rhs.Y * lhs.m22) + (rhs.Z * lhs.m23) + (rhs.W * lhs.m24),
+                (rhs.X * lhs.m31) + (rhs.Y * lhs.m32) + (rhs.Z * lhs.m33) + (rhs.W * lhs.m34),
+                (rhs.X * lhs.m41) + (rhs.Y * lhs.m42) + (rhs.Z * lhs.m43) + (rhs.W * lhs.m44));
         }
     }
 }
