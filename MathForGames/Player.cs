@@ -20,6 +20,8 @@ namespace MathForGames
         private float _speed = 1;
         private float rotation;
         private Controls _controls = Controls.WASD;
+        private float _scaleX = 1;
+        private float _scaleY = 1;
 
         public float Speed
         {
@@ -53,6 +55,13 @@ namespace MathForGames
             : base(x, y, rayColor, icon, color)
         {
             _sprite = new Sprite("Images/player.png");
+        }
+
+        public override void Start()
+        {
+            GameManager.onWin += DrawWinText;
+
+            base.Start();
         }
 
         public override void Update(float deltaTime)
@@ -91,37 +100,32 @@ namespace MathForGames
 
                 case Controls.WASD:
 
-                    xDirection = -Convert.ToInt32(Game.GetKeyDown((int)KeyboardKey.KEY_A))
-                        + Convert.ToInt32(Game.GetKeyDown((int)KeyboardKey.KEY_D));
-                    yDirection = -Convert.ToInt32(Game.GetKeyDown((int)KeyboardKey.KEY_W))
-                        + Convert.ToInt32(Game.GetKeyDown((int)KeyboardKey.KEY_S));
+                    xDirection = -Convert.ToInt32(Engine.GetKeyDown((int)KeyboardKey.KEY_A))
+                        + Convert.ToInt32(Engine.GetKeyDown((int)KeyboardKey.KEY_D));
+                    yDirection = -Convert.ToInt32(Engine.GetKeyDown((int)KeyboardKey.KEY_W))
+                        + Convert.ToInt32(Engine.GetKeyDown((int)KeyboardKey.KEY_S));
                     break;
                 
             }
 
-            /*float scaleX = 1;
-            float scaleY = 1;
-            if (Game.GetKeyDown((int)KeyboardKey.KEY_LEFT))
+            if (Engine.GetKeyPressed((int)KeyboardKey.KEY_UP))
             {
-                scaleX -= 1;
+                _scaleX += 1;
+                _scaleY += 1;
             }
-            else if(Game.GetKeyDown((int)KeyboardKey.KEY_RIGHT))
+            else if (Engine.GetKeyPressed((int)KeyboardKey.KEY_DOWN))
             {
-                scaleX += 1;
+                _scaleX -= 1;
+                _scaleY -= 1;
             }
-            else if (Game.GetKeyDown((int)KeyboardKey.KEY_UP))
-            {
-                scaleY += 1;
-            }
-            else if (Game.GetKeyDown((int)KeyboardKey.KEY_DOWN))
-            {
-                scaleY -= 1;
-            }
-            SetScale(scaleX, scaleY);*/
+            SetScale(_scaleX, _scaleY);
 
             //Set the actors current velocity to be the vector with the direction found scaled by the speed
             Velocity = new Vector2(xDirection, yDirection);
             Velocity = Velocity.Normalized * Speed;
+
+            SetRotation(_rotateCounter);
+            _rotateCounter += 0.05f;
 
             CheckCollision(_collisionTarget);
 
@@ -131,7 +135,7 @@ namespace MathForGames
         public override void OnCollision(Actor actor)
         {
             if (actor is Enemy && _seconds > 5)
-                Game.SetGameOver(true);
+                Engine.SetGameOver(true);
 
             base.OnCollision(actor);
         }
@@ -140,6 +144,11 @@ namespace MathForGames
         {
             _sprite.Draw(_globalTransform);
             base.Draw();
+        }
+
+        public void DrawWinText()
+        {
+            Raylib.DrawText("You win. \n Press esc to quit", 0, 0, 5, Color.GREEN);
         }
     }
 }

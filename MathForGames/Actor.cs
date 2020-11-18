@@ -31,6 +31,7 @@ namespace MathForGames
         protected Actor _collisionTarget;
 
         public bool Started { get; private set; }
+        public Actor Parent { get; private set; }
 
         public Vector2 Forward
         {
@@ -201,7 +202,7 @@ namespace MathForGames
             if (_parent != null)
                 _globalTransform = _parent._globalTransform * _localTransform;
             else
-                _globalTransform = Game.GetCurrentScene().World * _localTransform;
+                _globalTransform = Engine.GetCurrentScene().World * _localTransform;
         }
 
         private void UpdateFacing()
@@ -236,16 +237,6 @@ namespace MathForGames
             Rotate(angle);
         }
 
-        public void CheckInvincible()
-        {
-            _totalFrames++;
-            if (_totalFrames == 60)
-            {
-                _seconds++;
-                _totalFrames = 0;
-            }
-        }
-
         public virtual void Start()
         {
             Started = true;
@@ -257,14 +248,12 @@ namespace MathForGames
             /*if (Velocity.Magnitude != 0)
                 SetRotation(-(float)Math.Atan2(Velocity.Y, Velocity.X));*/
 
-            SetRotation(_rotateCounter);
-            _rotateCounter += 0.05f;
+            /*SetRotation(_rotateCounter);
+            _rotateCounter += 0.05f;*/
             
             UpdateTransforms();
 
             UpdateFacing();
-
-            CheckInvincible();
 
             //Increase position by the current velocity
             LocalPosition += _velocity * deltaTime;
@@ -295,12 +284,24 @@ namespace MathForGames
             }
 
             //Reset console text color to be default color
-            Console.ForegroundColor = Game.DefaultColor;
+            Console.ForegroundColor = Engine.DefaultColor;
         }
 
         public virtual void End()
         {
             Started = false;
+        }
+
+        public virtual void Destroy()
+        {
+
+            if (Parent != null)
+                Parent.RemoveChild(this);
+
+            foreach (Actor child in _children)
+                child.Destroy();
+
+            End();
         }
 
     }

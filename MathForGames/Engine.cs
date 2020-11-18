@@ -8,9 +8,8 @@ using Raylib_cs;
 
 namespace MathForGames
 {
-    class Game
+    class Engine
     {
-        private static bool _gameOver = false;
         private static Scene[] _scenes;
         private static int _currentSceneIndex;
 
@@ -20,15 +19,6 @@ namespace MathForGames
         }
 
         public static ConsoleColor DefaultColor { get; set; } = ConsoleColor.White;
-
-        /// <summary>
-        /// Used to set the value of game over.
-        /// </summary>
-        /// <param name="value">If this value is true, the game will end</param>
-        public static void SetGameOver(bool value)
-        {
-            _gameOver = value;
-        }
 
         /// <summary>
         /// Returns the scene at the index given.
@@ -164,7 +154,7 @@ namespace MathForGames
             return Raylib.IsKeyPressed((KeyboardKey)key);
         }
 
-        public Game()
+        public Engine()
         {
             _scenes = new Scene[0];
         }
@@ -187,7 +177,7 @@ namespace MathForGames
             Enemy enemy1 = new Enemy(0, 0, Color.GREEN, new Vector2(0, 5), new Vector2(30, 5), 'O', ConsoleColor.Green);
             Player player = new Player(0, 0, Color.BLUE, '@', ConsoleColor.Red);
             Partner partner1 = new Partner(0, 0, Color.BLUE, 'C', ConsoleColor.Red);
-
+            Wall wall = new Wall(0, 0, player);
             Goal goal = new Goal(0, 0, Color.GREEN, player, 'G', ConsoleColor.Green);
 
             //Initialize the enemies' starting values
@@ -197,6 +187,8 @@ namespace MathForGames
 
             partner1.Speed = 2;
             partner1.Target = enemy1;
+
+            wall.Velocity = new Vector2(-4 , 0);
 
             //Set player's starting stats
             player.Speed = 5;
@@ -209,6 +201,9 @@ namespace MathForGames
             goal.SetScale(3, 3);
             goal.SetTranslate(new Vector2(25, 10));
 
+            wall.SetScale(3, 3);
+            wall.SetTranslate(new Vector2(20, 10));
+
             enemy1.SetScale(2, 2);
             enemy1.SetTranslate(new Vector2(15, 15));
 
@@ -217,9 +212,11 @@ namespace MathForGames
             scene1.AddActor(enemy1);
             scene1.AddActor(partner1);
             scene1.AddActor(goal);
+            scene1.AddActor(wall);
 
             player.SetCollisionTarget(enemy1);
-            //goal.SetCollisionTarget(player);
+            goal.SetCollisionTarget(player);
+            wall.SetCollisionTarget(player);
 
             //Sets the starting scene index and adds the scenes to the scenes array
             int startingSceneIndex = 0;
@@ -267,7 +264,7 @@ namespace MathForGames
             Start();
 
             //Loops the game until either the game is set to be over or the window closes
-            while (!_gameOver && !Raylib.WindowShouldClose())
+            while (!GameManager.Gameover && !Raylib.WindowShouldClose())
             {
                 //Stores the current time between frames
                 float deltaTime = Raylib.GetFrameTime();

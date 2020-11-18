@@ -83,6 +83,12 @@ namespace MathForGames
             _sprite = new Sprite("Images/enemy.png");
         }
 
+        public override void Start()
+        {
+            GameManager.enemyCount++;
+            base.Start();
+        }
+
         /// <summary>
         /// Checks to see if the target is within the given angle
         /// and within the given distance. Returns false if no
@@ -164,6 +170,12 @@ namespace MathForGames
         {
             _sprite.Draw(_globalTransform);
             base.Draw();
+        }
+
+        public override void Destroy()
+        {
+            GameManager.enemyCount--;
+            base.Destroy();
         }
 
     }

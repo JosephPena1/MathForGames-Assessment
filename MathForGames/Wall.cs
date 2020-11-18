@@ -6,13 +6,17 @@ using MathLibrary;
 
 namespace MathForGames
 {
-    /// <summary>
-    /// This is the goal the player must reach to end the game. 
-    /// </summary>
-    class Goal : Actor
+    class Wall : Actor
     {
+        private float _speed = 1;
         private Actor _player;
         private Sprite _sprite;
+
+        public float Speed
+        {
+            get { return _speed; }
+            set { _speed = value; }
+        }
 
         /// <summary>
         /// 
@@ -21,11 +25,11 @@ namespace MathForGames
         /// <param name="y">Position on the y axis</param>
         /// <param name="icon">The symbol that will appear when drawn</param>
         /// <param name="color">The color of the symbol that will appear when drawn</param>
-        public Goal(float x, float y, Actor player, char icon = ' ', ConsoleColor color = ConsoleColor.White)
+        public Wall(float x, float y, Actor player, char icon = ' ', ConsoleColor color = ConsoleColor.White)
             : base(x, y, icon, color)
         {
-            _sprite = new Sprite("Images/goal.png");
             _player = player;
+            _sprite = new Sprite("Images/wall.png");
         }
 
         /// <summary>
@@ -36,21 +40,11 @@ namespace MathForGames
         /// <param name="rayColor">The color of the symbol that will appear when drawn to raylib</param>
         /// <param name="icon">The symbol that will appear when drawn</param>
         /// <param name="color">The color of the symbol that will appear when drawn to the console</param>
-        public Goal(float x, float y, Color rayColor, Actor player, char icon = ' ', ConsoleColor color = ConsoleColor.White)
+        public Wall(float x, float y, Color rayColor, Actor player, char icon = ' ', ConsoleColor color = ConsoleColor.White)
             : base(x, y, rayColor, icon, color)
         {
-            _sprite = new Sprite("Images/goal.png");
             _player = player;
-        }
-
-        /// <summary>
-        /// Checks to see if the player is in range of the goal.
-        /// </summary>
-        /// <returns></returns>
-        private bool CheckPlayerDistance()
-        {
-            float distance = (_player.GlobalPosition - GlobalPosition).Magnitude;
-            return distance <= 1;
+            _sprite = new Sprite("Images/wall.png");
         }
 
         public override void Update(float deltaTime)

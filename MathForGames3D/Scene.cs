@@ -9,11 +9,11 @@ namespace MathForGames3D
     class Scene
     {
         private Actor[] _actors;
-        private Matrix4 _tranform = new Matrix4();
+        private Matrix3 _transform = new Matrix3();
 
-        public Matrix4 World
+        public Matrix3 World
         {
-            get { return _tranform; }
+            get { return _transform; }
         }
 
         public bool Started { get; private set; }
@@ -42,7 +42,9 @@ namespace MathForGames3D
         {
             //Check to see if the index is outside the bounds of our array
             if (index < 0 || index >= _actors.Length)
+            {
                 return false;
+            }
 
             bool actorRemoved = false;
 
@@ -77,7 +79,9 @@ namespace MathForGames3D
         {
             //Check to see if the actor was null
             if (actor == null)
+            {
                 return false;
+            }
 
             bool actorRemoved = false;
             //Create a new array with a size one less than our old array
@@ -106,13 +110,16 @@ namespace MathForGames3D
             return actorRemoved;
         }
 
+        /// <summary>
+        /// Check to see if any actor in the scene has collided with another actor.
+        /// </summary>
+        private void CheckCollision()
+        {
+
+        }
+
         public virtual void Start()
         {
-            for (int i = 0; i < _actors.Length; i++)
-            {
-                _actors[i].Start();
-            }
-
             Started = true;
         }
 
@@ -125,12 +132,14 @@ namespace MathForGames3D
 
                 _actors[i].Update(deltaTime);
             }
+            //CheckCollision();
         }
 
         public virtual void Draw()
         {
             for (int i = 0; i < _actors.Length; i++)
             {
+                Raylib.DrawGrid(40, 1.0f);
                 _actors[i].Draw();
             }
         }

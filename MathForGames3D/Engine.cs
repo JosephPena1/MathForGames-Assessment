@@ -6,40 +6,15 @@ using MathLibrary;
 
 namespace MathForGames3D
 {
-    class Game
+    class Engine
     {
-        private static bool _gameOver;
+        private Camera3D _camera = new Camera3D();
         private static Scene[] _scenes;
         private static int _currentSceneIndex;
-        private Camera3D _camera = new Camera3D();
 
-        public static bool GameOver
+        public Engine()
         {
-            get { return _gameOver; }
-            set { _gameOver = value; }
-        }
-
-        public static int CurrentSceneIndex
-        {
-            get { return _currentSceneIndex; }
-        }
-
-        public static Scene GetScene(int index)
-        {
-            if (index < 0 || index > _scenes.Length)
-                return new Scene();
-
-            return _scenes[index];
-        }
-
-        /// <summary>
-        /// Returns the scene that is at the index of the 
-        /// current scene index
-        /// </summary>
-        /// <returns></returns>
-        public static Scene GetCurrentScene()
-        {
-            return _scenes[_currentSceneIndex];
+            _scenes = new Scene[0];
         }
 
         /// <summary>
@@ -132,28 +107,50 @@ namespace MathForGames3D
             _currentSceneIndex = index;
         }
 
+        public static bool GetKeyDown(int key)
+        {
+            return Raylib.IsKeyDown((KeyboardKey)key);
+        }
+
+        /// <summary>
+        /// Returns true while if key was pressed once
+        /// </summary>
+        /// <param name="key">The ascii value of the key to check</param>
+        /// <returns></returns>
+        public static bool GetKeyPressed(int key)
+        {
+            return Raylib.IsKeyPressed((KeyboardKey)key);
+        }
+
         private void Start()
         {
-            Raylib.InitWindow(1024, 760, "Math For Game 3D");
+            Raylib.InitWindow(1700, 900, "Math For Games");
             Raylib.SetTargetFPS(60);
+            _camera.position = new System.Numerics.Vector3(0.0f, 20.0f, 20.0f);  // Camera position
+            _camera.target = new System.Numerics.Vector3(0.0f, 0.0f, 0.0f);      // Camera looking at point
+            _camera.up = new System.Numerics.Vector3(0.0f, 1.0f, 0.0f);          // Camera up vector (rotation towards target)
+            _camera.fovy = 45.0f;                                                // Camera field-of-view Y
+            _camera.type = CameraType.CAMERA_PERSPECTIVE;                        // Camera mode type
 
-            _camera.position = new System.Numerics.Vector3(0.0f, 10.0f, 10.0f); // Camera position
-            _camera.target = new System.Numerics.Vector3(0.0f, 0.0f, 0.0f);     // Camera looking at point
-            _camera.up = new System.Numerics.Vector3(0.0f, 1.0f, 0.0f);         // Camera up vector (rotation towards target)
-            _camera.fovy = 45.0f;                                               // Camera Field-of-View Y
-            _camera.type = CameraType.CAMERA_PERSPECTIVE;                       // Camera mode type
+            Actor actor = new Actor(0, 0, 0, Color.BLUE, Shape.SPHERE, 5);
+            Actor actor1 = new Actor(4, 0, 0, Color.RED, Shape.CUBE, 5);
+            Player player = new Player(0, 0, 0, Color.BLUE, Shape.SPHERE, 2);
+            Partner childPlayer = new Partner(5, 0, 0, Color.RED, Shape.CUBE, 2);
+            Enemy enemy = new Enemy(10, 0, -10, Color.BLACK, Shape.SPHERE, 2);
 
-            Scene scene1 = new Scene();
+            player.Speed = 10;
+            player.AddChild(childPlayer);
 
-            Actor testActor = new Actor(5, 5, 0, Color.BLUE, 'O');
+            Scene scene = new Scene();
+            //scene.AddActor(actor);
+            scene.AddActor(player);
+            scene.AddActor(childPlayer);
+            scene.AddActor(enemy);
+            //scene.AddActor(actor1);
 
-            testActor.SetScale(5, 5, 5);
+            enemy.SetCollisionTarget(player);
 
-            scene1.AddActor(testActor);
-
-            int startingSceneIndex = 0;
-            startingSceneIndex = AddScene(scene1);
-            SetCurrentScene(startingSceneIndex);
+            SetCurrentScene(AddScene(scene));
         }
 
         private void Update(float deltaTime)
@@ -169,26 +166,22 @@ namespace MathForGames3D
             Raylib.BeginDrawing();
             Raylib.BeginMode3D(_camera);
 
-            Raylib.ClearBackground(Color.RAYWHITE);
+            Raylib.ClearBackground(Color.BLACK);
             _scenes[_currentSceneIndex].Draw();
-            Raylib.DrawGrid(10, 1.0f);
-            Raylib.DrawSphere(new System.Numerics.Vector3(0, 0, 0), 0.5f, Color.BLUE);
-
             Raylib.EndMode3D();
             Raylib.EndDrawing();
         }
 
         private void End()
         {
-            if (_scenes[_currentSceneIndex].Started)
-                _scenes[_currentSceneIndex].End();
+            _scenes[_currentSceneIndex].End();
         }
 
         public void Run()
         {
             Start();
 
-            while (!_gameOver && !Raylib.WindowShouldClose())
+            while (!GameManager.Gameover && !Raylib.WindowShouldClose())
             {
                 float deltaTime = Raylib.GetFrameTime();
                 Update(deltaTime);
