@@ -41,10 +41,12 @@ namespace MathForGames3D
             _collisionRadius = collisionRadius;
         }
 
-        /*public void CreateProjectile(Actor projectile)
+        public override void Start()
         {
-            AddChild(projectile);
-        }*/
+            GameManager.onWin += DrawWinText;
+
+            base.Start();
+        }
 
         public override void Update(float deltaTime)
         {
@@ -84,15 +86,32 @@ namespace MathForGames3D
             SetScale(new Vector3(_scaleX, _scaleY, _scaleZ));
 
             //Set the actors current velocity to be the vector with the direction found scaled by the speed
-            Velocity = new Vector3(xDirection, yDirection, zDirection);
-            Velocity = Velocity.Normalized * Speed;
+            Acceleration = new Vector3(xDirection, yDirection, zDirection);
 
             /*SetRotation(_rotateCounter);
             _rotateCounter += 0.05f;*/
 
-            /*CheckCollision(_collisionTarget);*/
+            CheckCollision(_collisionTarget);
+
+            Console.WriteLine(Math.Round(GlobalPosition.X) + " " + Math.Round(GlobalPosition.Y) + " " + Math.Round(GlobalPosition.Z));
 
             base.Update(deltaTime);
+        }
+
+        public override void OnCollision(Actor other)
+        {
+            if (other is Enemy && _seconds > 1)
+            {
+                Scene currentScene = Engine.GetScenes(Engine.CurrentSceneIndex);
+                currentScene.RemoveActor(this);
+            }
+
+            base.OnCollision(other);
+        }
+
+        public void DrawWinText()
+        {
+            Raylib.DrawText("You win. \n Press esc to quit", 0, 0, 5, Color.GREEN);
         }
     }
 }

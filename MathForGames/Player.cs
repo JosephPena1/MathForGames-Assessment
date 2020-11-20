@@ -121,13 +121,14 @@ namespace MathForGames
             SetScale(_scaleX, _scaleY);
 
             //Set the actors current velocity to be the vector with the direction found scaled by the speed
-            Velocity = new Vector2(xDirection, yDirection);
-            Velocity = Velocity.Normalized * Speed;
+            Acceleration = new Vector2(xDirection, yDirection);
 
-            SetRotation(_rotateCounter);
-            _rotateCounter += 0.05f;
+            /*SetRotation(_rotateCounter);
+            _rotateCounter += 0.05f;*/
 
             CheckCollision(_collisionTarget);
+
+            Console.WriteLine(Math.Round(GlobalPosition.X) + " " + Math.Round(GlobalPosition.Y));
 
             base.Update(deltaTime);
         }
@@ -135,7 +136,7 @@ namespace MathForGames
         public override void OnCollision(Actor actor)
         {
             if (actor is Enemy && _seconds > 5)
-                Engine.SetGameOver(true);
+                GameManager.Gameover = true;
 
             base.OnCollision(actor);
         }

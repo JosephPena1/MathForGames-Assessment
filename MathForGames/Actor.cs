@@ -15,7 +15,8 @@ namespace MathForGames
         protected int _seconds = 0;
         private float _totalFrames = 0f;
         protected char _icon = ' ';
-        protected Vector2 _velocity;
+        private Vector2 _velocity = new Vector2();
+        protected Vector2 _acceleration = new Vector2();
         protected Matrix3 _globalTransform = new Matrix3();
         protected Matrix3 _localTransform = new Matrix3();
         private Matrix3 _translation = new Matrix3();
@@ -29,6 +30,7 @@ namespace MathForGames
         protected float _rotateCounter = 0f;
         private float _collisionRadius = 1f;
         protected Actor _collisionTarget;
+        private float _maxSpeed = 5;
 
         public bool Started { get; private set; }
         public Actor Parent { get; private set; }
@@ -58,11 +60,11 @@ namespace MathForGames
             }
         }
 
-        public Vector2 Velocity
-        {
-            get { return _velocity; }
-            set { _velocity = value; }
-        }
+        public Vector2 Velocity { get => _velocity; set => _velocity = value; }
+
+        protected Vector2 Acceleration { get => _acceleration; set => _acceleration = value; }
+
+        public float MaxSpeed { get => _maxSpeed; set => _maxSpeed = value; }
 
         /// <summary>
         /// Base constructor
@@ -78,7 +80,6 @@ namespace MathForGames
             _localTransform = new Matrix3();
             _globalTransform = new Matrix3();
             LocalPosition = new Vector2(x, y);
-            _velocity = new Vector2();
             Forward = new Vector2(1, 0);
             _color = color;
         }
@@ -245,15 +246,21 @@ namespace MathForGames
         public virtual void Update(float deltaTime)
         {
 
-            /*if (Velocity.Magnitude != 0)
-                SetRotation(-(float)Math.Atan2(Velocity.Y, Velocity.X));*/
+            if (Velocity.Magnitude != 0)
+                SetRotation(-(float)Math.Atan2(Velocity.Y, Velocity.X));
 
             /*SetRotation(_rotateCounter);
             _rotateCounter += 0.05f;*/
-            
+
             UpdateTransforms();
 
             UpdateFacing();
+
+            Velocity += Acceleration;
+
+            if (Velocity.Magnitude > MaxSpeed)
+                Velocity = Velocity.Normalized * MaxSpeed;
+
 
             //Increase position by the current velocity
             LocalPosition += _velocity * deltaTime;

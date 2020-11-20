@@ -51,7 +51,7 @@ namespace MathForGames
         {
             //If the player is in range of the goal, end the game
             if (CheckCollision(_collisionTarget))
-                Engine.SetGameOver(true);
+                GameManager.Gameover = true;
 
             base.Update(deltaTime);
         }
@@ -59,7 +59,7 @@ namespace MathForGames
         public override void OnCollision(Actor actor)
         {
             if (actor is Player && _seconds > 1)
-                Engine.SetGameOver(true);
+                GameManager.Gameover = true;
 
             base.OnCollision(actor);
         }

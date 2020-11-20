@@ -211,8 +211,8 @@ namespace MathForGames
             scene1.AddActor(player);
             scene1.AddActor(enemy1);
             scene1.AddActor(partner1);
-            scene1.AddActor(goal);
-            scene1.AddActor(wall);
+            /*scene1.AddActor(goal);
+            scene1.AddActor(wall);*/
 
             player.SetCollisionTarget(enemy1);
             goal.SetCollisionTarget(player);
@@ -241,7 +241,7 @@ namespace MathForGames
         //Used to display objects and other info on the screen.
         public void Draw()
         {
-            Console.WriteLine(Raylib.GetMousePosition());
+            //Console.WriteLine(Raylib.GetMousePosition());
             Raylib.BeginDrawing();
 
             Raylib.ClearBackground(Color.BLACK);

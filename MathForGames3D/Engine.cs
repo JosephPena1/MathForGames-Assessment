@@ -12,6 +12,8 @@ namespace MathForGames3D
         private static Scene[] _scenes;
         private static int _currentSceneIndex;
 
+        public static int CurrentSceneIndex { get => _currentSceneIndex; set => _currentSceneIndex = value; }
+
         public Engine()
         {
             _scenes = new Scene[0];
@@ -100,11 +102,16 @@ namespace MathForGames3D
                 return;
 
             //Call end for the previous scene before changing to the new one
-            if (_scenes[_currentSceneIndex].Started)
-                _scenes[_currentSceneIndex].End();
+            if (_scenes[CurrentSceneIndex].Started)
+                _scenes[CurrentSceneIndex].End();
 
             //Update the current scene index
-            _currentSceneIndex = index;
+            CurrentSceneIndex = index;
+        }
+
+        public static Scene GetScenes(int index)
+        {
+            return _scenes[index];
         }
 
         public static bool GetKeyDown(int key)
@@ -124,7 +131,7 @@ namespace MathForGames3D
 
         private void Start()
         {
-            Raylib.InitWindow(1700, 900, "Math For Games");
+            Raylib.InitWindow(1024, 760, "Math For Games");
             Raylib.SetTargetFPS(60);
             _camera.position = new System.Numerics.Vector3(0.0f, 20.0f, 20.0f);  // Camera position
             _camera.target = new System.Numerics.Vector3(0.0f, 0.0f, 0.0f);      // Camera looking at point
@@ -132,33 +139,43 @@ namespace MathForGames3D
             _camera.fovy = 45.0f;                                                // Camera field-of-view Y
             _camera.type = CameraType.CAMERA_PERSPECTIVE;                        // Camera mode type
 
-            Actor actor = new Actor(0, 0, 0, Color.BLUE, Shape.SPHERE, 5);
-            Actor actor1 = new Actor(4, 0, 0, Color.RED, Shape.CUBE, 5);
             Player player = new Player(0, 0, 0, Color.BLUE, Shape.SPHERE, 2);
-            Partner childPlayer = new Partner(5, 0, 0, Color.RED, Shape.CUBE, 2);
-            Enemy enemy = new Enemy(10, 0, -10, Color.BLACK, Shape.SPHERE, 2);
+            Partner partner = new Partner(5, 0, 0, Color.GREEN, Shape.CUBE, 2);
+            Enemy enemy = new Enemy(10, 0, -10, Color.RED, Shape.SPHERE, 2);
+            Enemy enemy2 = new Enemy(-10, 0, -10, Color.RED, Shape.SPHERE, 2);
+            Enemy enemy3 = new Enemy(10, 0, 10, Color.RED, Shape.SPHERE, 2);
+
+            //Bug: enemy 1 still has collision when removed
 
             player.Speed = 10;
-            player.AddChild(childPlayer);
+            player.AddChild(partner);
+            player.SetCollisionTarget(enemy);
+            player.SetCollisionTarget(enemy2);
+            player.SetCollisionTarget(enemy3);
 
             Scene scene = new Scene();
-            //scene.AddActor(actor);
             scene.AddActor(player);
-            scene.AddActor(childPlayer);
+            scene.AddActor(partner);
             scene.AddActor(enemy);
-            //scene.AddActor(actor1);
+            scene.AddActor(enemy2);
+            scene.AddActor(enemy3);
 
-            enemy.SetCollisionTarget(player);
+            enemy.Target = player;
+            enemy.SetCollisionTarget(partner);
+            enemy2.Target = player;
+            enemy2.SetCollisionTarget(partner);
+            enemy3.Target = player;
+            enemy3.SetCollisionTarget(partner);
 
             SetCurrentScene(AddScene(scene));
         }
 
         private void Update(float deltaTime)
         {
-            if (!_scenes[_currentSceneIndex].Started)
-                _scenes[_currentSceneIndex].Start();
+            if (!_scenes[CurrentSceneIndex].Started)
+                _scenes[CurrentSceneIndex].Start();
 
-            _scenes[_currentSceneIndex].Update(deltaTime);
+            _scenes[CurrentSceneIndex].Update(deltaTime);
         }
 
         private void Draw()
@@ -167,14 +184,14 @@ namespace MathForGames3D
             Raylib.BeginMode3D(_camera);
 
             Raylib.ClearBackground(Color.BLACK);
-            _scenes[_currentSceneIndex].Draw();
+            _scenes[CurrentSceneIndex].Draw();
             Raylib.EndMode3D();
             Raylib.EndDrawing();
         }
 
         private void End()
         {
-            _scenes[_currentSceneIndex].End();
+            _scenes[CurrentSceneIndex].End();
         }
 
         public void Run()
