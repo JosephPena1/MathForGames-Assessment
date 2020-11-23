@@ -27,12 +27,12 @@ namespace MathForGames3D
         protected Color _rayColor;
         protected float _rotationCounter = 0f;
         private float _collisionRadius;
-        protected Actor _collisionTarget;
+        protected Actor[] _collisionTarget = new Actor[0];
         protected int _seconds = 0;
         private float _totalFrames = 0f;
         private float _radians;
         private float rotation;
-        private float _maxSpeed = 5;
+        private float _maxSpeed = 10;
         protected Shape _shape;
 
         public bool Started { get; private set; }
@@ -271,7 +271,7 @@ namespace MathForGames3D
             if (_velocity.Magnitude <= 0)
                 return;
 
-            Forward = Velocity.Normalized;
+            //Forward = Velocity.Normalized;
         }
 
         /// <summary>
@@ -291,29 +291,44 @@ namespace MathForGames3D
             }
         }
 
-        public virtual bool CheckCollision(Actor actor)
+        public virtual bool CheckCollision(Actor[] actor)
         {
             //if actor collides with actor call OnCollision and return true.
             if (actor == null)
                 return false;
 
-            if (actor._collisionRadius + _collisionRadius > (actor.GlobalPosition - GlobalPosition).Magnitude && actor != this)
+            for (int i = 0; i < actor.Length; i++)
             {
-                OnCollision(actor);
-                return true;
+                if (actor[i]._collisionRadius + _collisionRadius > (actor[i].GlobalPosition - GlobalPosition).Magnitude && actor[i] != this)
+                {
+                    OnCollision(actor);
+                }
+
+                else if (i == actor.Length)
+                {
+                    return true;
+                }
             }
 
             return false;
         }
 
-        public virtual void OnCollision(Actor other)
+        public virtual void OnCollision(Actor[] other)
         {
 
         }
 
-        public void SetCollisionTarget(Actor actor)
+        public void AddCollisionTarget(Actor actor)
         {
-            _collisionTarget = actor;
+            Actor[] appendedArray = new Actor[_collisionTarget.Length + 1];
+
+            for (int i = 0; i < _collisionTarget.Length; i++)
+            {
+                appendedArray[i] = _collisionTarget[i];
+            }
+
+            appendedArray[_collisionTarget.Length] = actor;
+            _collisionTarget = appendedArray;
         }
 
         public void LookAt(Vector3 position)
@@ -328,16 +343,16 @@ namespace MathForGames3D
             float angle = (float)Math.Acos(dotProd);
 
             //Find a perpindicular vector to the direction 
-            Vector3 perp = new Vector3(direction.Y, -direction.X, direction.Z);
+            Vector3 perp = new Vector3(direction.Z, direction.Y, -direction.Z);
 
             //Find the dot product of the perpindicular vector and the current forward 
-            float perpinDot = Vector3.DotProduct(perp, Forward);
+            float perpDot = Vector3.DotProduct(perp, Forward);
 
             //If the result isn't 0, use it to change the sign of the angle to be either positive or negative 
-            if (perpinDot != 0)
-                angle *= -perpinDot / Math.Abs(perpinDot);
+            if (perpDot != 0)
+                angle *= -perpDot / Math.Abs(perpDot);
 
-            Rotate(angle);
+            SetRotationY(angle);
         }
 
         public virtual void Start()
@@ -354,7 +369,14 @@ namespace MathForGames3D
 
             LocalPosition += _velocity * deltaTime;
 
-            UpdateFacing();
+            //UpdateFacing();
+
+            if (Velocity.Magnitude != 0)
+            {
+                Velocity.X -= Velocity.X / 20;
+                Velocity.Y -= Velocity.Y / 20;
+                Velocity.Z -= Velocity.Z / 20;
+            }
 
             Velocity += Acceleration;
 

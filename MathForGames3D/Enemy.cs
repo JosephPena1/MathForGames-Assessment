@@ -59,18 +59,20 @@ namespace MathForGames3D
             return false;
         }
 
-        public override void OnCollision(Actor other)
+        public override void OnCollision(Actor[] other)
         {
             Random randomPos = new Random();
-            if (other is Partner)
+            for (int i = 0; i < other.Length; i++)
             {
-                LocalPosition = new Vector3(100, 100, 100);
-                Scene currentScene = Engine.GetScenes(Engine.CurrentSceneIndex);
-                currentScene.RemoveActor(this);
-                
-                //LocalPosition = new Vector3(randomPos.Next(-20, 20), 0, randomPos.Next(-20, 20));
+                if (other[i] is Partner)
+                {
+                    Scene currentScene = Engine.GetScenes(Engine.CurrentSceneIndex);
+                    currentScene.RemoveActor(this);
+                    LocalPosition = new Vector3(100, 100, 100);
+
+                    //LocalPosition = new Vector3(randomPos.Next(-20, 20), 0, randomPos.Next(-20, 20));
+                }
             }
-                
 
             base.OnCollision(other);
         }

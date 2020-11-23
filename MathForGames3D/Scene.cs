@@ -94,7 +94,10 @@ namespace MathForGames3D
                 if (actor != _actors[i])
                 {
                     newArray[j] = _actors[i];
-                    j++;
+                    if (j >= 0 && j < _actors.Length)
+                    {
+                        j++;
+                    }
                 }
                 else
                 {

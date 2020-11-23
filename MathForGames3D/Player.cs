@@ -64,17 +64,17 @@ namespace MathForGames3D
             zDirection = -Convert.ToInt32(Engine.GetKeyDown((int)KeyboardKey.KEY_W))
                 + Convert.ToInt32(Engine.GetKeyDown((int)KeyboardKey.KEY_S));
 
-            if (Engine.GetKeyPressed((int)KeyboardKey.KEY_UP))
+            if (Engine.GetKeyDown((int)KeyboardKey.KEY_UP))
             {
-                _scaleX += 1;
-                _scaleY += 1;
-                _scaleZ += 1;
+                _scaleX += 0.1f;
+                _scaleY += 0.1f;
+                _scaleZ += 0.1f;
             }
-            else if (Engine.GetKeyPressed((int)KeyboardKey.KEY_DOWN))
+            else if (Engine.GetKeyDown((int)KeyboardKey.KEY_DOWN))
             {
-                _scaleX -= 1;
-                _scaleY -= 1;
-                _scaleZ -= 1;
+                _scaleX -= 0.1f;
+                _scaleY -= 0.1f;
+                _scaleZ -= 0.1f;
             }
 
             if (Engine.GetKeyDown((int)KeyboardKey.KEY_LEFT))
@@ -82,6 +82,13 @@ namespace MathForGames3D
 
             else if (Engine.GetKeyDown((int)KeyboardKey.KEY_RIGHT))
                 _rotationCounter += 0.05f;
+
+            /*if (Engine.GetKeyPressed((int)KeyboardKey.KEY_SPACE))
+            {
+                Scene currentScene = Engine.GetScenes(Engine.CurrentSceneIndex);
+                Projectile projectile = new Projectile(-10, 0, 10, Color.GREEN, Shape.SPHERE, 2);
+                currentScene.AddActor(projectile);
+            }*/
 
             SetScale(new Vector3(_scaleX, _scaleY, _scaleZ));
 
@@ -93,18 +100,22 @@ namespace MathForGames3D
 
             CheckCollision(_collisionTarget);
 
-            Console.WriteLine(Math.Round(GlobalPosition.X) + " " + Math.Round(GlobalPosition.Y) + " " + Math.Round(GlobalPosition.Z));
+            Console.WriteLine("x:" + Math.Round(GlobalPosition.X) + " " + "y:" + Math.Round(GlobalPosition.Y) + " " + "z:" + Math.Round(GlobalPosition.Z));
 
             base.Update(deltaTime);
         }
 
-        public override void OnCollision(Actor other)
+        public override void OnCollision(Actor[] other)
         {
-            if (other is Enemy && _seconds > 1)
+            for (int i = 0; i < other.Length; i++)
             {
-                Scene currentScene = Engine.GetScenes(Engine.CurrentSceneIndex);
-                currentScene.RemoveActor(this);
+                /*if (other[i] is Enemy && _seconds > 1)
+                {
+                    Scene currentScene = Engine.GetScenes(Engine.CurrentSceneIndex);
+                    currentScene.RemoveActor(this);
+                }*/
             }
+            
 
             base.OnCollision(other);
         }

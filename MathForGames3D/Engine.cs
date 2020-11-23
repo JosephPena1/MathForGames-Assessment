@@ -138,6 +138,7 @@ namespace MathForGames3D
             _camera.up = new System.Numerics.Vector3(0.0f, 1.0f, 0.0f);          // Camera up vector (rotation towards target)
             _camera.fovy = 45.0f;                                                // Camera field-of-view Y
             _camera.type = CameraType.CAMERA_PERSPECTIVE;                        // Camera mode type
+            Raylib.GetMouseRay(Raylib.GetMousePosition(), _camera);
 
             Player player = new Player(0, 0, 0, Color.BLUE, Shape.SPHERE, 2);
             Partner partner = new Partner(5, 0, 0, Color.GREEN, Shape.CUBE, 2);
@@ -145,13 +146,13 @@ namespace MathForGames3D
             Enemy enemy2 = new Enemy(-10, 0, -10, Color.RED, Shape.SPHERE, 2);
             Enemy enemy3 = new Enemy(10, 0, 10, Color.RED, Shape.SPHERE, 2);
 
-            //Bug: enemy 1 still has collision when removed
+            //Bug: when player is removed, throws exception
 
             player.Speed = 10;
             player.AddChild(partner);
-            player.SetCollisionTarget(enemy);
-            player.SetCollisionTarget(enemy2);
-            player.SetCollisionTarget(enemy3);
+            player.AddCollisionTarget(enemy);
+            player.AddCollisionTarget(enemy2);
+            player.AddCollisionTarget(enemy3);
 
             Scene scene = new Scene();
             scene.AddActor(player);
@@ -161,11 +162,11 @@ namespace MathForGames3D
             scene.AddActor(enemy3);
 
             enemy.Target = player;
-            enemy.SetCollisionTarget(partner);
+            enemy.AddCollisionTarget(partner);
             enemy2.Target = player;
-            enemy2.SetCollisionTarget(partner);
+            enemy2.AddCollisionTarget(partner);
             enemy3.Target = player;
-            enemy3.SetCollisionTarget(partner);
+            enemy3.AddCollisionTarget(partner);
 
             SetCurrentScene(AddScene(scene));
         }
@@ -184,7 +185,9 @@ namespace MathForGames3D
             Raylib.BeginMode3D(_camera);
 
             Raylib.ClearBackground(Color.BLACK);
+            //Raylib.DrawText("Hello", 0, 0, 5, Color.GREEN);
             _scenes[CurrentSceneIndex].Draw();
+
             Raylib.EndMode3D();
             Raylib.EndDrawing();
         }

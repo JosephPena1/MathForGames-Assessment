@@ -22,7 +22,7 @@ namespace MathForGames3D
             _collisionRadius = collisionRadius;
         }
 
-        public override void OnCollision(Actor other)
+        public override void OnCollision(Actor[] other)
         {
             /*if (other is Player && _seconds > 5)
                 ;*/

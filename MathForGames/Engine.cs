@@ -241,9 +241,8 @@ namespace MathForGames
         //Used to display objects and other info on the screen.
         public void Draw()
         {
-            //Console.WriteLine(Raylib.GetMousePosition());
+            Console.WriteLine(Raylib.GetMousePosition());
             Raylib.BeginDrawing();
-
             Raylib.ClearBackground(Color.BLACK);
             _scenes[_currentSceneIndex].Draw();
 

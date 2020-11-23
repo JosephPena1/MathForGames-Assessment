@@ -19,7 +19,7 @@ namespace MathForGames
 
         private float _speed = 1;
         private float rotation;
-        private Controls _controls = Controls.WASD;
+        private Controls _controls = Controls.MOUSE;
         private float _scaleX = 1;
         private float _scaleY = 1;
 
@@ -68,6 +68,8 @@ namespace MathForGames
         {
             //changes controls based on number. 1 = mouse, 2 = WASD.
             //int controls = 2;
+            float xTarget = Raylib.GetMousePosition().X;
+            float yTarget = Raylib.GetMousePosition().Y;
 
             float xDirection = 0;
             float yDirection = 0;
@@ -75,27 +77,9 @@ namespace MathForGames
             switch (_controls)
             {
                 case Controls.MOUSE:
+                    xDirection = xTarget - GlobalPosition.X;
+                    yDirection = yTarget - GlobalPosition.Y;
 
-                    if (Raylib.GetMousePosition().X >= 512 && Raylib.GetMousePosition().Y >= 380)
-                    {
-                        xDirection = Raylib.GetMousePosition().X;
-                        yDirection = Raylib.GetMousePosition().Y;
-                    }
-                    else if (Raylib.GetMousePosition().X < 512 && Raylib.GetMousePosition().Y >= 380)
-                    {
-                        xDirection = -Raylib.GetMousePosition().Y;
-                        yDirection = Raylib.GetMousePosition().X;
-                    }
-                    else if (Raylib.GetMousePosition().X >= 512 && Raylib.GetMousePosition().Y < 380)
-                    {
-                        xDirection = Raylib.GetMousePosition().X;
-                        yDirection = -Raylib.GetMousePosition().Y;
-                    }
-                    else
-                    {
-                        xDirection = -Raylib.GetMousePosition().Y;
-                        yDirection = -Raylib.GetMousePosition().X;
-                    }
                     break;
 
                 case Controls.WASD:
@@ -121,6 +105,7 @@ namespace MathForGames
             SetScale(_scaleX, _scaleY);
 
             //Set the actors current velocity to be the vector with the direction found scaled by the speed
+            float distance = (float)Math.Sqrt(xDirection * xDirection + yDirection * yDirection);
             Acceleration = new Vector2(xDirection, yDirection);
 
             /*SetRotation(_rotateCounter);
@@ -128,7 +113,7 @@ namespace MathForGames
 
             CheckCollision(_collisionTarget);
 
-            Console.WriteLine(Math.Round(GlobalPosition.X) + " " + Math.Round(GlobalPosition.Y));
+            //Console.WriteLine(Math.Round(GlobalPosition.X) + " " + Math.Round(GlobalPosition.Y));
 
             base.Update(deltaTime);
         }
