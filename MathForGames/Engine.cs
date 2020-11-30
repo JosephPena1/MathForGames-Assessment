@@ -209,10 +209,7 @@ namespace MathForGames
 
             //Add actors to the scenes
             scene1.AddActor(player);
-            scene1.AddActor(enemy1);
             scene1.AddActor(partner1);
-            /*scene1.AddActor(goal);
-            scene1.AddActor(wall);*/
 
             player.SetCollisionTarget(enemy1);
             goal.SetCollisionTarget(player);

@@ -24,26 +24,6 @@ namespace MathLibrary
             this.m31 = m31; this.m32 = m32; this.m33 = m33;
         }
 
-        public static Matrix3 operator +(Matrix3 lhs, Matrix3 rhs)
-        {
-            return new Matrix3
-                (
-                    lhs.m11 + rhs.m11, lhs.m12 + rhs.m12, lhs.m13 + rhs.m13,
-                    lhs.m21 + rhs.m21, lhs.m22 + rhs.m22, lhs.m23 + rhs.m23,
-                    lhs.m31 + rhs.m31, lhs.m32 + rhs.m32, lhs.m33 + rhs.m33
-                );
-        }
-
-        public static Matrix3 operator -(Matrix3 lhs, Matrix3 rhs)
-        {
-            return new Matrix3
-                (
-                    lhs.m11 - rhs.m11, lhs.m12 - rhs.m12, lhs.m13 - rhs.m13,
-                    lhs.m21 - rhs.m21, lhs.m22 - rhs.m22, lhs.m23 - rhs.m23,
-                    lhs.m31 - rhs.m31, lhs.m32 - rhs.m32, lhs.m33 - rhs.m33
-                );
-        }
-
         /// <summary>
         /// Creates a new Matrix that has been rotated by the given radians
         /// </summary>
@@ -121,6 +101,26 @@ namespace MathLibrary
             return new Vector3((rhs.X * lhs.m11) + (rhs.Y * lhs.m12) + (rhs.Z * lhs.m13),
                                (rhs.X * lhs.m21) + (rhs.Y * lhs.m22) + (rhs.Z * lhs.m23),
                                (rhs.X * lhs.m31) + (rhs.Y * lhs.m32) + (rhs.Z * lhs.m33));
+        }
+
+        public static Matrix3 operator +(Matrix3 lhs, Matrix3 rhs)
+        {
+            return new Matrix3
+                (
+                    lhs.m11 + rhs.m11, lhs.m12 + rhs.m12, lhs.m13 + rhs.m13,
+                    lhs.m21 + rhs.m21, lhs.m22 + rhs.m22, lhs.m23 + rhs.m23,
+                    lhs.m31 + rhs.m31, lhs.m32 + rhs.m32, lhs.m33 + rhs.m33
+                );
+        }
+
+        public static Matrix3 operator -(Matrix3 lhs, Matrix3 rhs)
+        {
+            return new Matrix3
+                (
+                    lhs.m11 - rhs.m11, lhs.m12 - rhs.m12, lhs.m13 - rhs.m13,
+                    lhs.m21 - rhs.m21, lhs.m22 - rhs.m22, lhs.m23 - rhs.m23,
+                    lhs.m31 - rhs.m31, lhs.m32 - rhs.m32, lhs.m33 - rhs.m33
+                );
         }
 
     }

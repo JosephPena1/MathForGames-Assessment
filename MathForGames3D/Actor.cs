@@ -388,26 +388,29 @@ namespace MathForGames3D
             //SetRotationZ(_rotationCounter);
             //_rotationCounter += 0.05f;
 
-            if (_totalFrames == 75)
+            if (_totalFrames == 55)
             {
                 _seconds += 1;
                 _totalFrames = 0;
             }
             _totalFrames++;
 
-
+            if (_seconds > 60)
+            {
+                GameManager.Gameover = true;
+            }
         }
 
         public virtual void Draw()
         {
             //Draws the actor and a line indicating it facing to the raylib window
-            Raylib.DrawLine(
+            /*Raylib.DrawLine(
                 (int)(GlobalPosition.X * 32),
                 (int)(GlobalPosition.Y * 32),
                 (int)((GlobalPosition.X + Forward.X) * 32),
                 (int)((GlobalPosition.Y + Forward.Y) * 32),
                 Color.WHITE
-            );
+            );*/
             Console.ForegroundColor = _color;
             DrawShape();
         }
@@ -423,12 +426,6 @@ namespace MathForGames3D
                     Raylib.DrawCube(new System.Numerics.Vector3(GlobalPosition.X, GlobalPosition.Y, GlobalPosition.Z), 2, 2, 2, _rayColor);
                     break;
             }
-        }
-
-        public virtual void Debug()
-        {
-            if (Parent != null)
-                Console.WriteLine("Velocity: " + Velocity.X + ", " + Velocity.Y);
         }
 
         public void Destroy()

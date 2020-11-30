@@ -10,6 +10,7 @@ namespace MathForGames3D
     {
         private float _collisionRadius;
         private Actor _target;
+        private static Enemy[] _enemies = new Enemy[0];
 
         public Actor Target
         {
@@ -27,6 +28,28 @@ namespace MathForGames3D
             : base(x, y, z, rayColor, shape, collisionRadius, icon, color)
         {
             _collisionRadius = collisionRadius;
+        }
+
+        public static void AddEnemy(int enemyNum, Actor partner, Actor goal, Scene scene)
+        {
+            Random randomPos = new Random();
+            Enemy[] appendedArray = new Enemy[enemyNum];
+
+            for (int i = 0; i < enemyNum; i++)
+            {
+                appendedArray[i] = new Enemy(0, 0, 15, 2);
+            }
+
+            _enemies = appendedArray;
+
+            for (var i = 0; i < _enemies.Length; i++)
+            {
+                _enemies[i].Target = goal;
+                goal.AddCollisionTarget(_enemies[i]);
+                _enemies[i].AddCollisionTarget(partner);
+                _enemies[i]._rayColor = Color.RED;
+                scene.AddActor(_enemies[i]);
+            }
         }
 
         /// <summary>
@@ -66,11 +89,7 @@ namespace MathForGames3D
             {
                 if (other[i] is Partner)
                 {
-                    Scene currentScene = Engine.GetScenes(Engine.CurrentSceneIndex);
-                    currentScene.RemoveActor(this);
-                    LocalPosition = new Vector3(100, 100, 100);
-
-                    //LocalPosition = new Vector3(randomPos.Next(-20, 20), 0, randomPos.Next(-20, 20));
+                    LocalPosition = new Vector3(randomPos.Next(-20, 20), 0, randomPos.Next(15, 25));
                 }
             }
 
@@ -79,7 +98,6 @@ namespace MathForGames3D
 
         public override void Start()
         {
-            GameManager.enemyCount++;
             base.Start();
         }
 

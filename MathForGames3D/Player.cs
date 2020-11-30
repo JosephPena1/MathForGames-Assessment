@@ -66,15 +66,21 @@ namespace MathForGames3D
 
             if (Engine.GetKeyDown((int)KeyboardKey.KEY_UP))
             {
-                _scaleX += 0.1f;
-                _scaleY += 0.1f;
-                _scaleZ += 0.1f;
+                if (_scaleX < 2.5f && _scaleY < 2.5f && _scaleZ < 2.5f)
+                {
+                    _scaleX += 0.1f;
+                    _scaleY += 0.1f;
+                    _scaleZ += 0.1f;
+                }
             }
             else if (Engine.GetKeyDown((int)KeyboardKey.KEY_DOWN))
             {
-                _scaleX -= 0.1f;
-                _scaleY -= 0.1f;
-                _scaleZ -= 0.1f;
+                if (_scaleX > 1.25f && _scaleY > 1.25f && _scaleZ > 1.25f)
+                {
+                    _scaleX -= 0.1f;
+                    _scaleY -= 0.1f;
+                    _scaleZ -= 0.1f;
+                }
             }
 
             if (Engine.GetKeyDown((int)KeyboardKey.KEY_LEFT))
@@ -116,13 +122,12 @@ namespace MathForGames3D
                 }*/
             }
             
-
             base.OnCollision(other);
         }
 
         public void DrawWinText()
         {
-            Raylib.DrawText("You win. \n Press esc to quit", 0, 0, 5, Color.GREEN);
+            GameManager.Gameover = true;
         }
     }
 }
