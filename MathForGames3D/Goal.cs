@@ -35,7 +35,9 @@ namespace MathForGames3D
             {
                 if (other[i] is Enemy && _seconds > 1)
                 {
-                    GameManager.Gameover = true;
+                    Scene scene = Engine.GetScenes(0);
+                    scene.RemoveActor(this);
+                    //GameManager.Gameover = true;
                 }
             }
 

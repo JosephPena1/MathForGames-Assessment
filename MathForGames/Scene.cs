@@ -101,8 +101,15 @@ namespace MathForGames
             {
                 if (actor != _actors[i])
                 {
-                    newArray[j] = _actors[i];
-                    j++;
+                    if (j > _actors.Length - 1)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        newArray[j] = _actors[i];
+                        j++;
+                    }
                 }
                 else
                 {
