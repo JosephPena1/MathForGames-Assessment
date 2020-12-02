@@ -46,7 +46,7 @@ namespace MathForGames
         /// </summary>
         /// <param name="numBullets">Number of bullets made</param>
         /// <param name="actor">set collision for given actor</param>
-        public static void CreateBullets(int numBullets, Actor actor)
+        public static void CreateBullets(int numBullets, Actor player, Actor partner)
         {
             Bullet[] bullets = new Bullet[numBullets];
             Scene currentScene = Engine.GetScenes(Engine.CurrentSceneIndex);
@@ -56,14 +56,30 @@ namespace MathForGames
             {
                 bullets[i] = new Bullet(randomPos.Next(25, 35), randomPos.Next(5, 35));
                 bullets[i].SetScale(2, 2);
+                bullets[i].AddCollisionTarget(partner);
                 currentScene.AddActor(bullets[i]);
             }
 
             for (int i = 0; i < bullets.Length; i++)
             {
-                actor.AddCollisionTarget(bullets[i]);
+                player.AddCollisionTarget(bullets[i]);
+
             }
 
+        }
+
+        public override void OnCollision(Actor[] actor)
+        {
+            Random randomPos = new Random();
+            for (int i = 0; i < actor.Length; i++)
+            {
+                if (actor[i] is Partner)
+                {
+                    SetTranslate(new Vector2(randomPos.Next(-6, -5), randomPos.Next(-6, -5) ));
+                }
+            }
+
+            base.OnCollision(actor);
         }
 
         public override void Update(float deltaTime)
@@ -73,26 +89,13 @@ namespace MathForGames
 
             Random randomPos = new Random();
             if (GlobalPosition.X <= -5 || GlobalPosition.Y <= -5 && _seconds > 1)
-            {
                 SetTranslate(new Vector2(randomPos.Next(50, 55), randomPos.Next(0,30)));
-            }
 
             Acceleration += new Vector2(-1, 0);
-            //If the player is in range of the goal, end the game
+
             CheckCollision(_collisionTarget);
 
             base.Update(deltaTime);
-        }
-
-        public override void OnCollision(Actor[] actor)
-        {
-            /*for (int i = 0; i < actor.Length; i++)
-            {
-                if (actor[i] is Player && _seconds > 1)
-                    GameManager.Gameover = true;
-            }*/
-            
-            base.OnCollision(actor);
         }
 
         public override void Draw()

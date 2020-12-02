@@ -17,6 +17,11 @@ namespace MathForGames
 
         public static ConsoleColor DefaultColor { get; set; } = ConsoleColor.White;
 
+        public Engine()
+        {
+            _scenes = new Scene[0];
+        }
+
         /// <summary>
         /// Returns the scene at the index given.
         /// Returns an empty scene if the index is out of bounds
@@ -156,11 +161,6 @@ namespace MathForGames
             return Raylib.IsKeyPressed((KeyboardKey)key);
         }
 
-        public Engine()
-        {
-            _scenes = new Scene[0];
-        }
-
         //Called when the game begins. Use this for initialization.
         public void Start()
         {
@@ -177,15 +177,18 @@ namespace MathForGames
 
             //Create the actors to add to our scene
             Player player = new Player(0, 0, 0.5f);
+            Enemy enemy1 = new Enemy(0, 0, new Vector2(), new Vector2());
+            Partner partner1 = new Partner(0, 0, 0.5f);
             Goal goal = new Goal(0, 0, 2, player);
 
             //Set player's starting stats
             player.Speed = 1;
             player.SetTranslate(new Vector2(5, 10));
-            player.SetScale(3, 3);
-            //player.AddChild(partner1);
+            player.SetScale(1, 1);
+            player.AddChild(enemy1);
+            enemy1.AddChild(partner1);
 
-            //partner1.SetTranslate(new Vector2(3, 0));
+            partner1.SetTranslate(new Vector2(2, 0));
 
             goal.SetScale(3, 3);
             goal.SetTranslate(new Vector2(35, 10));
@@ -195,6 +198,8 @@ namespace MathForGames
 
             //Add actors to the scenes
             scene1.AddActor(player);
+            scene1.AddActor(enemy1);
+            scene1.AddActor(partner1);
             scene1.AddActor(goal);
 
             goal.AddCollisionTarget(player);
@@ -206,7 +211,8 @@ namespace MathForGames
             //Sets the current scene to be the starting scene index
             SetCurrentScene(startingSceneIndex);
 
-            Bullet.CreateBullets(100, player);
+            Bullet.CreateBullets(100, player, partner1);
+
             /*Console.WriteLine("Choose a difficulty");
             Console.WriteLine("[1] Easy \n[2] Normal \n[3] Hard");
             char input = Console.ReadKey().KeyChar;
@@ -244,6 +250,7 @@ namespace MathForGames
         public void Draw()
         {
             //Console.WriteLine(Raylib.GetMousePosition());
+            GameManager.LivesCounter();
             GameManager.Counter();
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Color.BLACK);

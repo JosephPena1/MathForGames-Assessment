@@ -13,7 +13,9 @@ namespace MathForGames
     class Actor
     {
         protected int _seconds = 0;
+        protected int _iSeconds = 0;
         private float _totalFrames = 0f;
+        private float _totalIFrames = 0f;
         protected char _icon = ' ';
         private Vector2 _velocity = new Vector2();
         protected Vector2 _acceleration = new Vector2();
@@ -262,11 +264,17 @@ namespace MathForGames
             //Increase position by the current velocity
             LocalPosition += _velocity * deltaTime;
 
-            if (_totalFrames == 75)
+            if (_totalFrames == 70)
             {
                 _seconds += 1;
                 _totalFrames = 0;
             }
+            if (_totalIFrames == 10)
+            {
+                _iSeconds += 1;
+                _totalIFrames = 0;
+            }
+            _totalIFrames++;
             _totalFrames++;
         }
 

@@ -65,7 +65,7 @@ namespace MathForGames
         /// <param name="patrolPointB"></param>
         /// <param name="icon">The symbol that will appear when drawn</param>
         /// <param name="color">The color of the symbol that will appear when drawn to the console</param>
-        public Enemy(float x, float y, float collisionRadius,Vector2 patrolPointA, Vector2 patrolPointB)
+        public Enemy(float x, float y, float collisionRadius, Vector2 patrolPointA, Vector2 patrolPointB)
             : base(x, y)
         {
             _alertColor = Color.RED;
@@ -131,25 +131,6 @@ namespace MathForGames
             Velocity = direction.Normalized * Speed;
         }
 
-        public override void Update(float deltaTime)
-        {
-            //If the target can be seen change the color to red and reset the player's position
-            //If the target can't be seen change the color to blue
-            if (CheckTargetInSight(1.5f, 5))
-            {
-                _rayColor = Color.RED;
-                //Target.LocalPosition = new Vector2();
-            }
-            else
-            {
-                _rayColor = Color.BLUE;
-            }
-            CheckCollision(_collisionTarget);
-
-            //UpdatePatrolLocation();
-            base.Update(deltaTime);
-        }
-
         public override void OnCollision(Actor[] actor)
         {
             Random randomPos = new Random();
@@ -169,6 +150,28 @@ namespace MathForGames
             }
 
             base.OnCollision(actor);
+        }
+
+        public override void Update(float deltaTime)
+        {
+            SetRotation(_rotateCounter);
+            _rotateCounter += 0.05f;
+
+            //If the target can be seen change the color to red and reset the player's position
+            //If the target can't be seen change the color to blue
+            if (CheckTargetInSight(1.5f, 5))
+            {
+                _rayColor = Color.RED;
+                //Target.LocalPosition = new Vector2();
+            }
+            else
+            {
+                _rayColor = Color.BLUE;
+            }
+            CheckCollision(_collisionTarget);
+
+            //UpdatePatrolLocation();
+            base.Update(deltaTime);
         }
 
         public override void Draw()

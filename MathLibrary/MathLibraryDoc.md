@@ -8,27 +8,27 @@
 
          Name: X
              Description: Gets & Sets _x.
-             Type: public float Property
+             Type: [Property] public float
 
          Name: Y
              Description: Gets & Sets _y.
-             Type: public float Property
+             Type: [Property] public float
 
          Name: Magnitude
              Description: Gets/Returns Magnitude of a vector.
-             Type: public float Property
+             Type: [Property] public float
 
          Name: Normalized
              Description: Gets/Returns a vector Normalized.
-             Type: public Vector2 Property
+             Type: [Property] public Vector2
 
          Name: Vector2()
              Description: Initializes Vector2 variables.
-             Type: public Vector2 contructor
+             Type: [Contructor] public
 
-         Name: public Vector2(float x, float y)
+         Name: Vector2(float x, float y)
              Description: Initializes Vector2 variables.
-             Type: public Vector2 contructor
+             Type: [Contructor] public
 
          Name: Normalize(Vector2 vector)
              Description: Returns normalized version of the vector passed in.
@@ -60,31 +60,31 @@
 
          Name: X
              Description: Gets & Sets _x.
-             Type: public float Property
+             Type: [Property] public float
 
          Name: Y
              Description: Gets & Sets _y.
-             Type: public float Property
+             Type: [Property] public float
 
          Name: Z
              Description: Gets & Sets _z.
-             Type: public float Property
+             Type: [Property] public float
 
          Name: Magnitude
              Description: Gets/Returns Magnitude of a vector.
-             Type: public float Property
+             Type: [Property] public float
 
          Name: Normalized
              Description: Gets/Returns a vector Normalized.
-             Type: public Vector3 Property
+             Type: [Property] public Vector3
 
          Name: Vector3()
              Description: Initializes Vector3 variables.
-             Type: public Vector3 contructor
+             Type: [Contructor] public
 
-         Name: public Vector3(float x, float y)
+         Name: Vector3(float x, float y)
              Description: Initializes Vector3 variables.
-             Type: public Vector3 contructor
+             Type: [Contructor] public
 
          Name: Normalize(Vector3 vector)
              Description: Returns normalized version of the vector passed in.
@@ -120,35 +120,35 @@
 
          Name: X
              Description: Gets & Sets _x.
-             Type: public float Property
+             Type: [Property] public float
 
          Name: Y
              Description: Gets & Sets _y.
-             Type: public float Property
+             Type: [Property] public float
 
          Name: Z
              Description: Gets & Sets _z.
-             Type: public float Property
+             Type: [Property] public float
 
          Name: W
              Description: Gets & Sets _w.
-             Type: public float Property
+             Type: [Property] public float
 
          Name: Magnitude
              Description: Gets/Returns Magnitude of a vector.
-             Type: public float Property
+             Type: [Property] public float
 
          Name: Normalized
              Description: Gets/Returns a vector Normalized.
-             Type: public Vector4 Property
+             Type: [Property] public Vector4
 
          Name: Vector4()
              Description: Initializes Vector4 variables.
-             Type: public Vector4 contructor
+             Type: [Contructor] public
 
-         Name: public Vector4(float x, float y)
+         Name: Vector4(float x, float y)
              Description: Initializes Vector3 variables.
-             Type: public Vector4 contructor
+             Type: [Contructor] public
 
          Name: Normalize(Vector4 vector)
              Description: Returns normalized version of the vector passed in.
@@ -188,13 +188,13 @@
 
          Name: Matrix3()
              Description: Initilizes Matrix3 variables.
-             Type: public Matrix3 contructor
+             Type: [Contructor] public
 
          Name: Matrix3(float m11, float m12, float m13,
                        float m21, float m22, float m23,
                        float m31, float m32, float m33)
              Description: Initilizes Matrix3 variables.
-             Type: public Matrix3 contructor
+             Type: [Contructor] public
 
          Name: CreateRotation(float radians)
              Description: Creates a new Matrix that's rotated by the given radians.
@@ -232,14 +232,14 @@
 
          Name: Matrix4()
              Description: Initilizes Matrix4 variables.
-             Type: public Matrix4 contructor
+             Type: [Contructor] public
 
          Name: Matrix4(float m11, float m12, float m13, float m14,
                        float m21, float m22, float m23, float m24,
                        float m31, float m32, float m33, float m34,
                        float m41, float m42, float m43, float m44)
              Description: Initilizes Matrix4 variables.
-             Type: public Matrix4 contructor
+             Type: [Contructor] public
 
          Name: CreateRotationX(float radians)
              Description: Creates a new Matrix that's rotated on the X-axis by the given radians.

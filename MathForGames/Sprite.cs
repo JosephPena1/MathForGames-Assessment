@@ -10,24 +10,16 @@ namespace MathForGames
     {
         private Texture2D _texture;
 
-        public int Width
-        {
-            get { return _texture.width; }
-            set { _texture.width = value; }
-        }
+        public int Width { get => _texture.width;  set => _texture.width = value; }
 
-        public int Height
-        {
-            get { return _texture.height; }
-            set { _texture.height = value; }
-        }
+        public int Height { get => _texture.height; set  => _texture.height = value; }
 
         public Sprite(Texture2D texture)
         {
             _texture = texture;
         }
 
-        public Sprite (string path)
+        public Sprite(string path)
         {
             _texture = Raylib.LoadTexture(path);
         }

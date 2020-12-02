@@ -9,12 +9,9 @@ namespace MathForGames
     class Scene
     {
         private Actor[] _actors;
-        private Matrix3 _tranform = new Matrix3();
+        private Matrix3 _transform = new Matrix3();
 
-        public Matrix3 World
-        {
-            get { return _tranform; }
-        }
+        public Matrix3 World{ get => _transform; }
 
         public bool Started { get; private set; }
 

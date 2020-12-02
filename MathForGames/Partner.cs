@@ -14,17 +14,9 @@ namespace MathForGames
         private float _speed = 1;
         private Sprite _sprite;
 
-        public float Speed
-        {
-            get { return _speed; }
-            set { _speed = value; }
-        }
+        public float Speed{ get => _speed; set => _speed = value; }
 
-        public Actor Target
-        {
-            get { return _target; }
-            set { _target = value; }
-        }
+        public Actor Target{ get => _target;  set => _target = value; }
 
         /// <summary>
         /// 
@@ -88,10 +80,21 @@ namespace MathForGames
             return false;
         }
 
+        public override void OnCollision(Actor[] actor)
+        {
+            for (int i = 0; i < actor.Length; i++)
+            {
+                if (actor[i] is Enemy)
+                {
+
+                }
+            }
+
+            base.OnCollision(actor);
+        }
+
         public override void Update(float deltaTime)
         {
-            //If the target can be seen change the color to red and reset the player's position
-            //If the target can't be seen change the color to blue
             if (CheckTargetInSight(1.5f, 5))
             {
                 _rayColor = Color.RED;
@@ -104,19 +107,6 @@ namespace MathForGames
 
             //UpdatePatrolLocation();
             base.Update(deltaTime);
-        }
-
-        public override void OnCollision(Actor[] actor)
-        {
-            for (int i = 0; i < actor.Length; i++)
-            {
-                if (actor[i] is Enemy)
-                {
-
-                }
-            }
-
-            base.OnCollision(actor);
         }
 
         public override void Draw()

@@ -56,7 +56,9 @@ namespace MathForGames
 
         public override void UpdateFacing()
         {
-            LookAt(new Vector2(Raylib.GetMousePosition().X / 32, Raylib.GetMousePosition().Y / 32));
+            if (Velocity.Magnitude != 0)
+                SetRotation(-(float)Math.Atan2(Velocity.Y, Velocity.X));
+            //LookAt(new Vector2(Raylib.GetMousePosition().X / 32, Raylib.GetMousePosition().Y / 32));
         }
 
         public override void Update(float deltaTime)
@@ -73,7 +75,7 @@ namespace MathForGames
 
             Acceleration = new Vector2(xDirection, yDirection);
 
-            if (Engine.GetKeyPressed((int)KeyboardKey.KEY_UP))
+            /*if (Engine.GetKeyPressed((int)KeyboardKey.KEY_UP))
             {
                 _scaleX += 1;
                 _scaleY += 1;
@@ -83,37 +85,59 @@ namespace MathForGames
                 _scaleX -= 1;
                 _scaleY -= 1;
             }
-            SetScale(_scaleX, _scaleY);
+            SetScale(_scaleX, _scaleY);*/
 
             if (Engine.GetKeyDown((int)KeyboardKey.KEY_LEFT_CONTROL))
                 Acceleration /= 10;
 
-            //Set the actors current velocity to be the vector with the direction found scaled by the speed
-
-
-            /*SetRotation(_rotateCounter);
-            _rotateCounter += 0.05f;*/
-
             CheckCollision(_collisionTarget);
 
-            Console.WriteLine("x:" + Math.Round(GlobalPosition.X) + " " + "y:" + Math.Round(GlobalPosition.Y));
+            //Console.WriteLine("x:" + Math.Round(GlobalPosition.X) + " " + "y:" + Math.Round(GlobalPosition.Y));
 
             base.Update(deltaTime);
         }
 
-        //Set every wall to collide with player
         public override void OnCollision(Actor[] actor)
         {
             for (int i = 0; i < actor.Length; i++)
             {
-                if (actor[i] is Bullet && _seconds > 1)
+                switch(GameManager.goalCount)
                 {
-                    GameManager.Gameover = true;
-                    /*Scene currentScene = Engine.GetScenes(Engine.CurrentSceneIndex);
-                    currentScene.RemoveActor(this);*/
+                    case 5:
+                        break;
+
+                    default:
+                        switch(GameManager.livesCount)
+                        {
+                            case 3:
+                                if (actor[i] is Bullet && _iSeconds > 1)
+                                    GameManager.livesCount -= 1;
+                                _iSeconds = 0;
+                                break;
+
+                            case 2:
+                                if (actor[i] is Bullet && _iSeconds > 1)
+                                    GameManager.livesCount -= 1;
+                                _iSeconds = 0;
+                                break;
+
+                            case 1:
+                                if (actor[i] is Bullet && _iSeconds > 1)
+                                    GameManager.livesCount -= 1;
+                                _iSeconds = 0;
+                                break;
+
+                            case 0:
+                                if (actor[i] is Bullet && _iSeconds > 1)
+                                    GameManager.Gameover = true;
+                                break;
+
+                            default:
+                                break;
+                        }
+                        break;
                 }
             }
-
             base.OnCollision(actor);
         }
 

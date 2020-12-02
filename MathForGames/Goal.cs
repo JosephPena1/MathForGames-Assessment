@@ -54,16 +54,6 @@ namespace MathForGames
             return distance <= 1;
         }
 
-        public override void Update(float deltaTime)
-        {
-            GameManager.CheckWin();
-            //If the player is in range of the goal, end the game
-            if (CheckCollision(_collisionTarget))
-                GameManager.Gameover = true;
-
-            base.Update(deltaTime);
-        }
-
         public override void OnCollision(Actor[] actor)
         {
             Random randomPos = new Random();
@@ -72,11 +62,29 @@ namespace MathForGames
                 if (actor[i] is Player && _seconds > 1)
                 {
                     SetTranslate(new Vector2(randomPos.Next(5, 30), randomPos.Next(5, 20)));
-                    GameManager.Goalcount++;
+                    switch (GameManager.goalCount)
+                    {
+                        case 5:
+                            break;
+
+                        default:
+                            GameManager.goalCount++;
+                            break;
+                    }
                 }
             }
-            
+
             base.OnCollision(actor);
+        }
+
+        public override void Update(float deltaTime)
+        {
+            GameManager.CheckWin();
+            //If the player is in range of the goal, end the game
+            if (CheckCollision(_collisionTarget))
+                GameManager.Gameover = true;
+
+            base.Update(deltaTime);
         }
 
         public override void Draw()
