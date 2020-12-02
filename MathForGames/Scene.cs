@@ -88,7 +88,7 @@ namespace MathForGames
         public bool RemoveActor(Actor actor)
         {
             //Check to see if the actor was null
-            if (actor == null)
+            if (actor == null || _actors.Length == 0)
                 return false;
 
             bool actorRemoved = false;
@@ -101,11 +101,7 @@ namespace MathForGames
             {
                 if (actor != _actors[i])
                 {
-                    if (j > _actors.Length - 1)
-                    {
-                        return false;
-                    }
-                    else
+                    if (j < newArray.Length)
                     {
                         newArray[j] = _actors[i];
                         j++;

@@ -75,7 +75,7 @@ namespace MathForGames
             {
                 if (actor[i] is Partner)
                 {
-                    SetTranslate(new Vector2(randomPos.Next(-6, -5), randomPos.Next(-6, -5) ));
+                    SetTranslate(new Vector2(randomPos.Next(-6, -5), randomPos.Next(-6, -5)));
                 }
             }
 
