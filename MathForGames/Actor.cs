@@ -28,8 +28,8 @@ namespace MathForGames
         protected Actor[] _children = new Actor[0];
         protected float _rotationAngle;
         protected float _rotateCounter = 0f;
-        private float _collisionRadius = 1f;
-        protected Actor _collisionTarget;
+        private float _collisionRadius = 0.5f;
+        protected Actor[] _collisionTarget = new Actor[0];
         private float _maxSpeed = 5;
 
         public bool Started { get; private set; }
@@ -38,11 +38,7 @@ namespace MathForGames
         public Vector2 Forward
         {
             get { return new Vector2(_globalTransform.m11, _globalTransform.m21); }
-            set
-            {
-                Vector2 lookPosition = LocalPosition + value.Normalized;
-                LookAt(lookPosition); LookAt(lookPosition);
-            }
+            set { LookAt(value.Normalized + GlobalPosition); }
         }
 
         public Vector2 GlobalPosition
@@ -73,15 +69,13 @@ namespace MathForGames
         /// <param name="x">Position on the y axis</param>
         /// <param name="icon">The symbol that will appear when drawn</param>
         /// <param name="color">The color of the symbol that will appear when drawn</param>
-        public Actor(float y, float x, char icon = ' ', ConsoleColor color = ConsoleColor.White)
+        public Actor(float y, float x)
         {
-            _rayColor = Color.WHITE;
-            _icon = icon;
             _localTransform = new Matrix3();
             _globalTransform = new Matrix3();
             LocalPosition = new Vector2(x, y);
-            Forward = new Vector2(1, 0);
-            _color = color;
+            //Forward = new Vector2(1, 0);
+            _collisionRadius = 0.5f;
         }
 
         /// <summary>
@@ -92,13 +86,12 @@ namespace MathForGames
         /// <param name="rayColor">The color of the symbol that will appear when drawn to raylib</param>
         /// <param name="icon">The symbol that will appear when drawn</param>
         /// <param name="color">The color of the symbol that will appear when drawn</param>
-        public Actor(float x, float y, Color rayColor, char icon = ' ', ConsoleColor color = ConsoleColor.White)
-            : this(x, y, icon, color)
+        public Actor(float x, float y, float collisionRadius)
         {
             _localTransform = new Matrix3();
             _globalTransform = new Matrix3();
-            Forward = new Vector2(1, 0);
-            _rayColor = rayColor;
+            //Forward = new Vector2(1, 0);
+            _collisionRadius = collisionRadius;
         }
 
         public void AddChild(Actor child)
@@ -166,16 +159,23 @@ namespace MathForGames
         /// </summary>
         /// <param name="other">The actor that this actor is checking collision against</param>
         /// <returns></returns>
-        public virtual bool CheckCollision(Actor actor)
+        public virtual bool CheckCollision(Actor[] actor)
         {
             //if actor collides with actor call OnCollision and return true.
             if (actor == null)
                 return false;
 
-            if (actor._collisionRadius + _collisionRadius > (actor.GlobalPosition - GlobalPosition).Magnitude && actor != this)
+            for (int i = 0; i < actor.Length; i++)
             {
-                OnCollision(actor);
-                return true;
+                if (actor[i]._collisionRadius + _collisionRadius > (actor[i].GlobalPosition - GlobalPosition).Magnitude && actor[i] != this)
+                {
+                    OnCollision(actor);
+                }
+
+                else if (i == actor.Length)
+                {
+                    return true;
+                }
             }
 
             return false;
@@ -185,15 +185,22 @@ namespace MathForGames
         /// Use this to define game logic for this actors collision.
         /// </summary>
         /// <param name="other"></param>
-        public virtual void OnCollision(Actor actor)
+        public virtual void OnCollision(Actor[] actor)
         {
-            //Vector2 direction = actor.GlobalPosition - GlobalPosition;
-            //actor.SetTranslate(actor.LocalPosition + direction.Normalized);
+
         }
 
-        public void SetCollisionTarget(Actor actor)
+        public void AddCollisionTarget(Actor actor)
         {
-            _collisionTarget = actor;
+            Actor[] appendedArray = new Actor[_collisionTarget.Length + 1];
+
+            for (int i = 0; i < _collisionTarget.Length; i++)
+            {
+                appendedArray[i] = _collisionTarget[i];
+            }
+
+            appendedArray[_collisionTarget.Length] = actor;
+            _collisionTarget = appendedArray;
         }
 
         private void UpdateTransforms()
@@ -206,36 +213,21 @@ namespace MathForGames
                 _globalTransform = Engine.GetCurrentScene().World * _localTransform;
         }
 
-        private void UpdateFacing()
+        public virtual void UpdateFacing()
         {
-            if (_velocity.Magnitude <= 0)
+            /*if (_velocity.Magnitude <= 0)
                 return;
 
-            Forward = Velocity.Normalized;
+            Forward = Velocity;*/
         }
 
         public void LookAt(Vector2 position)
         {
-            //Find the direction that the actor should look in 
-            Vector2 direction = (position - LocalPosition).Normalized;
+            Vector2 direction = (position - GlobalPosition).Normalized;
 
-            //Use the dotproduct to find the angle the actor needs to rotate 
-            float dotProd = Vector2.DotProduct(Forward, direction);
-            if (Math.Abs(dotProd) > 1)
-                return;
-            float angle = (float)Math.Acos(dotProd);
+            float angle = Vector2.FindAngle(Forward, direction);
 
-            //Find a perpindicular vector to the direction 
-            Vector2 perp = new Vector2(direction.Y, -direction.X);
-
-            //Find the dot product of the perpindicular vector and the current forward 
-            float perpinDot = Vector2.DotProduct(perp, Forward);
-
-            //If the result isn't 0, use it to change the sign of the angle to be either positive or negative 
-            if (perpinDot != 0)
-                angle *= -perpinDot / Math.Abs(perpinDot);
-
-            Rotate(angle);
+            Rotate(-angle);
         }
 
         public virtual void Start()
@@ -246,23 +238,36 @@ namespace MathForGames
         public virtual void Update(float deltaTime)
         {
 
-            if (Velocity.Magnitude != 0)
-                SetRotation(-(float)Math.Atan2(Velocity.Y, Velocity.X));
+            /*if (Velocity.Magnitude != 0)
+                SetRotation(-(float)Math.Atan2(Velocity.Y, Velocity.X));*/
 
             /*SetRotation(_rotateCounter);
             _rotateCounter += 0.05f;*/
 
             UpdateTransforms();
 
-            UpdateFacing();
+            //UpdateFacing();
+
+            if (Velocity.Magnitude != 0)
+            {
+                Velocity.X -= Velocity.X / 20;
+                Velocity.Y -= Velocity.Y / 20;
+            }
 
             Velocity += Acceleration;
 
             if (Velocity.Magnitude > MaxSpeed)
                 Velocity = Velocity.Normalized * MaxSpeed;
-            
+
             //Increase position by the current velocity
             LocalPosition += _velocity * deltaTime;
+
+            if (_totalFrames == 75)
+            {
+                _seconds += 1;
+                _totalFrames = 0;
+            }
+            _totalFrames++;
         }
 
         public virtual void Draw()
@@ -270,14 +275,14 @@ namespace MathForGames
             //Draws the actor and a line indicating it facing to the raylib window.
             //Scaled to match console movement
 
-            Raylib.DrawText(_icon.ToString(), (int)(GlobalPosition.X * 32), (int)(GlobalPosition.Y * 32), 32, _rayColor);
-            Raylib.DrawLine(
+            //Raylib.DrawText(_icon.ToString(), (int)(GlobalPosition.X * 32), (int)(GlobalPosition.Y * 32), 32, _rayColor);
+            /*Raylib.DrawLine(
                 (int)(GlobalPosition.X * 32),
                 (int)(GlobalPosition.Y * 32),
                 (int)((GlobalPosition.X + Forward.X) * 32),
                 (int)((GlobalPosition.Y + Forward.Y) * 32),
                 _rayColor
-            );
+            );*/
             //Changes the color of the console text to be this actors color
             Console.ForegroundColor = _color;
 

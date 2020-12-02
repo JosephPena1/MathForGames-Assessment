@@ -11,24 +11,14 @@ namespace MathForGames
     /// </summary>
     class Player : Actor
     {
-        enum Controls
-        {
-            MOUSE,
-            WASD
-        }
-
+        private float _collisionRadius;
         private float _speed = 1;
         private float rotation;
-        private Controls _controls = Controls.MOUSE;
         private float _scaleX = 1;
         private float _scaleY = 1;
-
-        public float Speed
-        {
-            get { return _speed; }
-            set { _speed = value; }
-        }
         private Sprite _sprite;
+
+        public float Speed { get => _speed; set => _speed = value; }
 
         /// <summary>
         /// 
@@ -37,8 +27,8 @@ namespace MathForGames
         /// <param name="y">Position on the y axis</param>
         /// <param name="icon">The symbol that will appear when drawn</param>
         /// <param name="color">The color of the symbol that will appear when drawn</param>
-        public Player(float x, float y, char icon = ' ', ConsoleColor color = ConsoleColor.White)
-            : base(x, y, icon, color)
+        public Player(float x, float y)
+            : base(x, y)
         {
             _sprite = new Sprite("Images/player.png");
         }
@@ -51,8 +41,8 @@ namespace MathForGames
         /// <param name="rayColor">The color of the symbol that will appear when drawn to raylib</param>
         /// <param name="icon">The symbol that will appear when drawn</param>
         /// <param name="color">The color of the symbol that will appear when drawn to the console</param>
-        public Player(float x, float y, Color rayColor, char icon = ' ', ConsoleColor color = ConsoleColor.White)
-            : base(x, y, rayColor, icon, color)
+        public Player(float x, float y, float collisionRadius)
+            : base(x, y, collisionRadius)
         {
             _sprite = new Sprite("Images/player.png");
         }
@@ -64,33 +54,24 @@ namespace MathForGames
             base.Start();
         }
 
+        public override void UpdateFacing()
+        {
+            LookAt(new Vector2(Raylib.GetMousePosition().X / 32, Raylib.GetMousePosition().Y / 32));
+        }
+
         public override void Update(float deltaTime)
         {
-            //changes controls based on number. 1 = mouse, 2 = WASD.
-            //int controls = 2;
-            float xTarget = Raylib.GetMousePosition().X;
-            float yTarget = Raylib.GetMousePosition().Y;
+            UpdateFacing();
 
             float xDirection = 0;
             float yDirection = 0;
 
-            switch (_controls)
-            {
-                case Controls.MOUSE:
-                    xDirection = xTarget - GlobalPosition.X;
-                    yDirection = yTarget - GlobalPosition.Y;
+            xDirection = -Convert.ToInt32(Engine.GetKeyDown((int)KeyboardKey.KEY_A))
+                + Convert.ToInt32(Engine.GetKeyDown((int)KeyboardKey.KEY_D));
+            yDirection = -Convert.ToInt32(Engine.GetKeyDown((int)KeyboardKey.KEY_W))
+                + Convert.ToInt32(Engine.GetKeyDown((int)KeyboardKey.KEY_S));
 
-                    break;
-
-                case Controls.WASD:
-
-                    xDirection = -Convert.ToInt32(Engine.GetKeyDown((int)KeyboardKey.KEY_A))
-                        + Convert.ToInt32(Engine.GetKeyDown((int)KeyboardKey.KEY_D));
-                    yDirection = -Convert.ToInt32(Engine.GetKeyDown((int)KeyboardKey.KEY_W))
-                        + Convert.ToInt32(Engine.GetKeyDown((int)KeyboardKey.KEY_S));
-                    break;
-                
-            }
+            Acceleration = new Vector2(xDirection, yDirection);
 
             if (Engine.GetKeyPressed((int)KeyboardKey.KEY_UP))
             {
@@ -104,24 +85,34 @@ namespace MathForGames
             }
             SetScale(_scaleX, _scaleY);
 
+            if (Engine.GetKeyDown((int)KeyboardKey.KEY_LEFT_CONTROL))
+                Acceleration /= 10;
+
             //Set the actors current velocity to be the vector with the direction found scaled by the speed
-            float distance = (float)Math.Sqrt(xDirection * xDirection + yDirection * yDirection);
-            Acceleration = new Vector2(xDirection, yDirection);
+
 
             /*SetRotation(_rotateCounter);
             _rotateCounter += 0.05f;*/
 
             CheckCollision(_collisionTarget);
 
-            //Console.WriteLine(Math.Round(GlobalPosition.X) + " " + Math.Round(GlobalPosition.Y));
+            Console.WriteLine("x:" + Math.Round(GlobalPosition.X) + " " + "y:" + Math.Round(GlobalPosition.Y));
 
             base.Update(deltaTime);
         }
 
-        public override void OnCollision(Actor actor)
+        //Set every wall to collide with player
+        public override void OnCollision(Actor[] actor)
         {
-            if (actor is Enemy && _seconds > 5)
-                GameManager.Gameover = true;
+            for (int i = 0; i < actor.Length; i++)
+            {
+                if (actor[i] is Bullet && _seconds > 1)
+                {
+                    GameManager.Gameover = true;
+                    /*Scene currentScene = Engine.GetScenes(Engine.CurrentSceneIndex);
+                    currentScene.RemoveActor(this);*/
+                }
+            }
 
             base.OnCollision(actor);
         }
@@ -134,7 +125,7 @@ namespace MathForGames
 
         public void DrawWinText()
         {
-            Raylib.DrawText("You win. \n Press esc to quit", 0, 0, 5, Color.GREEN);
+            Raylib.DrawText("You win. \nPress esc to quit", 0, 0, 20, Color.GREEN);
         }
     }
 }

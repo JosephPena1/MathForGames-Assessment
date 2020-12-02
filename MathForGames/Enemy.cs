@@ -21,17 +21,9 @@ namespace MathForGames
         private float _speed = 1;
         private Sprite _sprite;
 
-        public float Speed
-        {
-            get { return _speed; }
-            set { _speed = value; }
-        }
+        public float Speed { get => _speed; set => _speed = value; }
 
-        public Actor Target
-        {
-            get { return _target; }
-            set { _target = value; }
-        }
+        public Actor Target { get => _target; set => _target = value; }
 
         public Vector2 PatrolPointA
         {
@@ -54,8 +46,8 @@ namespace MathForGames
         /// <param name="patrolPointB"></param>
         /// <param name="icon">The symbol that will appear when drawn</param>
         /// <param name="color">The color of the symbol that will appear when drawn</param>
-        public Enemy(float x, float y, Vector2 patrolPointA, Vector2 patrolPointB, char icon = ' ', ConsoleColor color = ConsoleColor.White)
-            : base(x, y, icon, color)
+        public Enemy(float x, float y, Vector2 patrolPointA, Vector2 patrolPointB)
+            : base(x, y)
         {
             PatrolPointA = patrolPointA;
             PatrolPointB = patrolPointB;
@@ -73,8 +65,8 @@ namespace MathForGames
         /// <param name="patrolPointB"></param>
         /// <param name="icon">The symbol that will appear when drawn</param>
         /// <param name="color">The color of the symbol that will appear when drawn to the console</param>
-        public Enemy(float x, float y, Color rayColor, Vector2 patrolPointA, Vector2 patrolPointB, char icon = ' ', ConsoleColor color = ConsoleColor.White)
-            : base(x, y, rayColor, icon, color)
+        public Enemy(float x, float y, float collisionRadius,Vector2 patrolPointA, Vector2 patrolPointB)
+            : base(x, y)
         {
             _alertColor = Color.RED;
             PatrolPointA = patrolPointA;
@@ -85,7 +77,6 @@ namespace MathForGames
 
         public override void Start()
         {
-            GameManager.enemyCount++;
             base.Start();
         }
 
@@ -153,15 +144,29 @@ namespace MathForGames
             {
                 _rayColor = Color.BLUE;
             }
+            CheckCollision(_collisionTarget);
 
             //UpdatePatrolLocation();
             base.Update(deltaTime);
         }
 
-        public override void OnCollision(Actor actor)
+        public override void OnCollision(Actor[] actor)
         {
-            if (actor is Partner)
+            Random randomPos = new Random();
+            for (int i = 0; i < actor.Length; i++)
+            {
+                if (actor[i] is Partner && _seconds > 1)
+                {
+                    Scene currentScene = Engine.GetScenes(Engine.CurrentSceneIndex);
 
+                    currentScene.RemoveActor(this);
+
+                    LocalPosition = new Vector2(1000, 1000);
+
+                    //LocalPosition = new Vector2(randomPos.Next(-20, 20), 0, randomPos.Next(-20, 20));
+
+                }
+            }
 
             base.OnCollision(actor);
         }
@@ -174,7 +179,6 @@ namespace MathForGames
 
         public override void Destroy()
         {
-            GameManager.enemyCount--;
             base.Destroy();
         }
 

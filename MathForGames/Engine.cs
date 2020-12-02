@@ -13,10 +13,7 @@ namespace MathForGames
         private static Scene[] _scenes;
         private static int _currentSceneIndex;
 
-        public static int CurrentSceneIndex
-        {
-            get { return _currentSceneIndex; }
-        }
+        public static int CurrentSceneIndex { get => _currentSceneIndex; set => _currentSceneIndex = value; }
 
         public static ConsoleColor DefaultColor { get; set; } = ConsoleColor.White;
 
@@ -134,6 +131,11 @@ namespace MathForGames
             _currentSceneIndex = index;
         }
 
+        public static Scene GetScenes(int index)
+        {
+            return _scenes[index];
+        }
+
         /// <summary>
         /// Returns true while a key is being pressed
         /// </summary>
@@ -174,49 +176,28 @@ namespace MathForGames
             Scene scene1 = new Scene();
 
             //Create the actors to add to our scene
-            Enemy enemy1 = new Enemy(0, 0, Color.GREEN, new Vector2(0, 5), new Vector2(30, 5), 'O', ConsoleColor.Green);
-            Player player = new Player(0, 0, Color.BLUE, '@', ConsoleColor.Red);
-            Partner partner1 = new Partner(0, 0, Color.BLUE, 'C', ConsoleColor.Red);
-            Wall wall = new Wall(0, 0, player);
-            Goal goal = new Goal(0, 0, Color.GREEN, player, 'G', ConsoleColor.Green);
-
-            //Initialize the enemies' starting values
-            
-            enemy1.Speed = 2;
-            enemy1.Target = player;
-
-            partner1.Speed = 2;
-            partner1.Target = enemy1;
-
-            wall.Velocity = new Vector2(-4 , 0);
+            Player player = new Player(0, 0, 0.5f);
+            Goal goal = new Goal(0, 0, 2, player);
 
             //Set player's starting stats
-            player.Speed = 5;
-            player.SetTranslate(new Vector2(5, 5));
+            player.Speed = 1;
+            player.SetTranslate(new Vector2(5, 10));
             player.SetScale(3, 3);
-            player.AddChild(partner1);
+            //player.AddChild(partner1);
 
-            partner1.SetTranslate(new Vector2(3, 0));
+            //partner1.SetTranslate(new Vector2(3, 0));
 
             goal.SetScale(3, 3);
-            goal.SetTranslate(new Vector2(25, 10));
+            goal.SetTranslate(new Vector2(35, 10));
 
-            wall.SetScale(3, 3);
-            wall.SetTranslate(new Vector2(20, 10));
-
-            enemy1.SetScale(2, 2);
-            enemy1.SetTranslate(new Vector2(15, 15));
+            /*wall.SetScale(3, 3);
+            wall.SetTranslate(new Vector2(20, 10));*/
 
             //Add actors to the scenes
             scene1.AddActor(player);
-            scene1.AddActor(enemy1);
-            scene1.AddActor(partner1);
-            /*scene1.AddActor(goal);
-            scene1.AddActor(wall);*/
+            scene1.AddActor(goal);
 
-            player.SetCollisionTarget(enemy1);
-            goal.SetCollisionTarget(player);
-            wall.SetCollisionTarget(player);
+            goal.AddCollisionTarget(player);
 
             //Sets the starting scene index and adds the scenes to the scenes array
             int startingSceneIndex = 0;
@@ -224,6 +205,27 @@ namespace MathForGames
 
             //Sets the current scene to be the starting scene index
             SetCurrentScene(startingSceneIndex);
+
+            Bullet.CreateBullets(100, player);
+            /*Console.WriteLine("Choose a difficulty");
+            Console.WriteLine("[1] Easy \n[2] Normal \n[3] Hard");
+            char input = Console.ReadKey().KeyChar;
+
+            switch (input)
+            {
+                case '1':
+                    Bullet.CreateBullets(40, player);
+                    break;
+
+                case '2':
+                    Bullet.CreateBullets(60, player);
+                    break;
+
+                case '3':
+                    Bullet.CreateBullets(80, player);
+                    break;
+            }*/
+
         }
 
         /// <summary>
@@ -234,14 +236,15 @@ namespace MathForGames
         {
             if (!_scenes[_currentSceneIndex].Started)
                 _scenes[_currentSceneIndex].Start();
-            
+
             _scenes[_currentSceneIndex].Update(deltaTime);
         }
 
         //Used to display objects and other info on the screen.
         public void Draw()
         {
-            Console.WriteLine(Raylib.GetMousePosition());
+            //Console.WriteLine(Raylib.GetMousePosition());
+            GameManager.Counter();
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Color.BLACK);
             _scenes[_currentSceneIndex].Draw();

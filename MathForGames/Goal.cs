@@ -11,6 +11,7 @@ namespace MathForGames
     /// </summary>
     class Goal : Actor
     {
+        private float _collisionRadius;
         private Actor _player;
         private Sprite _sprite;
 
@@ -21,8 +22,8 @@ namespace MathForGames
         /// <param name="y">Position on the y axis</param>
         /// <param name="icon">The symbol that will appear when drawn</param>
         /// <param name="color">The color of the symbol that will appear when drawn</param>
-        public Goal(float x, float y, Actor player, char icon = ' ', ConsoleColor color = ConsoleColor.White)
-            : base(x, y, icon, color)
+        public Goal(float x, float y, Actor player)
+            : base(x, y)
         {
             _sprite = new Sprite("Images/goal.png");
             _player = player;
@@ -36,8 +37,8 @@ namespace MathForGames
         /// <param name="rayColor">The color of the symbol that will appear when drawn to raylib</param>
         /// <param name="icon">The symbol that will appear when drawn</param>
         /// <param name="color">The color of the symbol that will appear when drawn to the console</param>
-        public Goal(float x, float y, Color rayColor, Actor player, char icon = ' ', ConsoleColor color = ConsoleColor.White)
-            : base(x, y, rayColor, icon, color)
+        public Goal(float x, float y, float collisionRadius, Actor player)
+            : base(x, y)
         {
             _sprite = new Sprite("Images/goal.png");
             _player = player;
@@ -55,6 +56,7 @@ namespace MathForGames
 
         public override void Update(float deltaTime)
         {
+            GameManager.CheckWin();
             //If the player is in range of the goal, end the game
             if (CheckCollision(_collisionTarget))
                 GameManager.Gameover = true;
@@ -62,11 +64,18 @@ namespace MathForGames
             base.Update(deltaTime);
         }
 
-        public override void OnCollision(Actor actor)
+        public override void OnCollision(Actor[] actor)
         {
-            if (actor is Player && _seconds > 1)
-                GameManager.Gameover = true;
-
+            Random randomPos = new Random();
+            for (int i = 0; i < actor.Length; i++)
+            {
+                if (actor[i] is Player && _seconds > 1)
+                {
+                    SetTranslate(new Vector2(randomPos.Next(5, 30), randomPos.Next(5, 20)));
+                    GameManager.Goalcount++;
+                }
+            }
+            
             base.OnCollision(actor);
         }
 

@@ -35,8 +35,8 @@ namespace MathForGames
         /// <param name="patrolPointB"></param>
         /// <param name="icon">The symbol that will appear when drawn</param>
         /// <param name="color">The color of the symbol that will appear when drawn</param>
-        public Partner(float x, float y, char icon = ' ', ConsoleColor color = ConsoleColor.White)
-            : base(x, y, icon, color)
+        public Partner(float x, float y)
+            : base(x, y)
         {
             _sprite = new Sprite("Images/partner.png");
         }
@@ -51,8 +51,8 @@ namespace MathForGames
         /// <param name="patrolPointB"></param>
         /// <param name="icon">The symbol that will appear when drawn</param>
         /// <param name="color">The color of the symbol that will appear when drawn to the console</param>
-        public Partner(float x, float y, Color rayColor, char icon = ' ', ConsoleColor color = ConsoleColor.White)
-            : base(x, y, rayColor, icon, color)
+        public Partner(float x, float y, float collisionRadius)
+            : base(x, y)
         {
             _alertColor = Color.RED;
             _sprite = new Sprite("Images/partner.png");
@@ -106,10 +106,15 @@ namespace MathForGames
             base.Update(deltaTime);
         }
 
-        public override void OnCollision(Actor actor)
+        public override void OnCollision(Actor[] actor)
         {
-            if (actor is Enemy)
+            for (int i = 0; i < actor.Length; i++)
+            {
+                if (actor[i] is Enemy)
+                {
 
+                }
+            }
 
             base.OnCollision(actor);
         }

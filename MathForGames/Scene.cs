@@ -38,6 +38,21 @@ namespace MathForGames
             _actors = appendedArray;
         }
 
+        public void AddActor(Actor actor, int number)
+        {
+            //Create a new array with a size one greater than our old array
+            Actor[] appendedArray = new Actor[_actors.Length + 1];
+            //Copy the values from the old array to the new array
+            for (int i = 0; i < _actors.Length; i++)
+            {
+                appendedArray[i] = _actors[i];
+            }
+            //Set the last value in the new array to be the actor we want to add
+            appendedArray[_actors.Length] = actor;
+            //Set old array to hold the values of the new array
+            _actors = appendedArray;
+        }
+
         public bool RemoveActor(int index)
         {
             //Check to see if the index is outside the bounds of our array
