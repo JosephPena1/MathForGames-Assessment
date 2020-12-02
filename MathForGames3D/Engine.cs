@@ -133,7 +133,7 @@ namespace MathForGames3D
         {
             Raylib.InitWindow(1024, 760, "Math For Games");
             Raylib.SetTargetFPS(60);
-            _camera.position = new System.Numerics.Vector3(0.0f, 20.0f, 20.0f);  // Camera position
+            _camera.position = new System.Numerics.Vector3(0.0f, 40.0f, 30.0f);  // Camera position, y20 & z20 default
             _camera.target = new System.Numerics.Vector3(0.0f, 0.0f, 0.0f);      // Camera looking at point
             _camera.up = new System.Numerics.Vector3(0.0f, 1.0f, 0.0f);          // Camera up vector (rotation towards target)
             _camera.fovy = 45.0f;                                                // Camera field-of-view Y
@@ -142,31 +142,19 @@ namespace MathForGames3D
 
             Player player = new Player(0, 0, 0, Color.BLUE, Shape.SPHERE, 2);
             Partner partner = new Partner(5, 0, 0, Color.GREEN, Shape.CUBE, 2);
-            Enemy enemy = new Enemy(10, 0, -10, Color.RED, Shape.SPHERE, 2);
-            Enemy enemy2 = new Enemy(-10, 0, -10, Color.RED, Shape.SPHERE, 2);
-            Enemy enemy3 = new Enemy(10, 0, 10, Color.RED, Shape.SPHERE, 2);
+            Goal goal = new Goal(0, 0, -15, Color.GRAY, Shape.CUBE, 2);
 
-            //Bug: when player is removed, throws exception
+            //make it so enemies follow the goal, the player will prevent them from reaching it
 
-            player.Speed = 10;
+            player.Speed = 5;
             player.AddChild(partner);
-            player.AddCollisionTarget(enemy);
-            player.AddCollisionTarget(enemy2);
-            player.AddCollisionTarget(enemy3);
 
             Scene scene = new Scene();
             scene.AddActor(player);
             scene.AddActor(partner);
-            scene.AddActor(enemy);
-            scene.AddActor(enemy2);
-            scene.AddActor(enemy3);
+            scene.AddActor(goal);
 
-            enemy.Target = player;
-            enemy.AddCollisionTarget(partner);
-            enemy2.Target = player;
-            enemy2.AddCollisionTarget(partner);
-            enemy3.Target = player;
-            enemy3.AddCollisionTarget(partner);
+            Enemy.AddEnemy(10, partner, goal, scene);
 
             SetCurrentScene(AddScene(scene));
         }

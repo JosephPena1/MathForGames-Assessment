@@ -27,28 +27,6 @@ namespace MathLibrary
             this.m41 = m41; this.m42 = m42; this.m43 = m43; this.m44 = m44;
         }
 
-        public static Matrix4 operator +(Matrix4 lhs, Matrix4 rhs)
-        {
-            return new Matrix4
-                (
-                    lhs.m11 + rhs.m11, lhs.m12 + rhs.m12, lhs.m13 + rhs.m13, lhs.m14 + rhs.m14,
-                    lhs.m21 + rhs.m21, lhs.m22 + rhs.m22, lhs.m23 + rhs.m23, lhs.m24 + rhs.m24,
-                    lhs.m31 + rhs.m31, lhs.m32 + rhs.m32, lhs.m33 + rhs.m33, lhs.m34 + rhs.m34,
-                    lhs.m41 + rhs.m41, lhs.m42 + rhs.m42, lhs.m43 + rhs.m43, lhs.m44 + rhs.m44
-                );
-        }
-
-        public static Matrix4 operator -(Matrix4 lhs, Matrix4 rhs)
-        {
-            return new Matrix4
-                (
-                    lhs.m11 - rhs.m11, lhs.m12 - rhs.m12, lhs.m13 - rhs.m13, lhs.m14 - rhs.m14,
-                    lhs.m21 - rhs.m21, lhs.m22 - rhs.m22, lhs.m23 - rhs.m23, lhs.m24 - rhs.m24,
-                    lhs.m31 - rhs.m31, lhs.m32 - rhs.m32, lhs.m33 - rhs.m33, lhs.m34 - rhs.m34,
-                    lhs.m41 - rhs.m41, lhs.m42 - rhs.m42, lhs.m43 - rhs.m43, lhs.m44 - rhs.m44
-                );
-        }
-
         /// <summary>
         /// Creates a new Matrix that has been rotated on the X-axis by the given radians
         /// </summary>
@@ -182,5 +160,28 @@ namespace MathLibrary
                 (rhs.X * lhs.m31) + (rhs.Y * lhs.m32) + (rhs.Z * lhs.m33) + (rhs.W * lhs.m34),
                 (rhs.X * lhs.m41) + (rhs.Y * lhs.m42) + (rhs.Z * lhs.m43) + (rhs.W * lhs.m44));
         }
+
+        public static Matrix4 operator +(Matrix4 lhs, Matrix4 rhs)
+        {
+            return new Matrix4
+                (
+                    lhs.m11 + rhs.m11, lhs.m12 + rhs.m12, lhs.m13 + rhs.m13, lhs.m14 + rhs.m14,
+                    lhs.m21 + rhs.m21, lhs.m22 + rhs.m22, lhs.m23 + rhs.m23, lhs.m24 + rhs.m24,
+                    lhs.m31 + rhs.m31, lhs.m32 + rhs.m32, lhs.m33 + rhs.m33, lhs.m34 + rhs.m34,
+                    lhs.m41 + rhs.m41, lhs.m42 + rhs.m42, lhs.m43 + rhs.m43, lhs.m44 + rhs.m44
+                );
+        }
+
+        public static Matrix4 operator -(Matrix4 lhs, Matrix4 rhs)
+        {
+            return new Matrix4
+                (
+                    lhs.m11 - rhs.m11, lhs.m12 - rhs.m12, lhs.m13 - rhs.m13, lhs.m14 - rhs.m14,
+                    lhs.m21 - rhs.m21, lhs.m22 - rhs.m22, lhs.m23 - rhs.m23, lhs.m24 - rhs.m24,
+                    lhs.m31 - rhs.m31, lhs.m32 - rhs.m32, lhs.m33 - rhs.m33, lhs.m34 - rhs.m34,
+                    lhs.m41 - rhs.m41, lhs.m42 - rhs.m42, lhs.m43 - rhs.m43, lhs.m44 - rhs.m44
+                );
+        }
+
     }
 }

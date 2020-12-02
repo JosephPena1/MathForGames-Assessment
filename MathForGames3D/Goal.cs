@@ -6,17 +6,17 @@ using MathLibrary;
 
 namespace MathForGames3D
 {
-    class Projectile : Actor
+    class Goal : Actor
     {
         private float _collisionRadius;
 
-        public Projectile(float x, float y, float z, float collisionRadius, char icon = ' ', ConsoleColor color = ConsoleColor.White)
-            : base(x, y, z, collisionRadius, icon, color)
+        public Goal(float x, float y, float z, float collisionRadius, char icon = ' ', ConsoleColor color = ConsoleColor.White)
+           : base(x, y, z, collisionRadius, icon, color)
         {
             _collisionRadius = collisionRadius;
         }
 
-        public Projectile(float x, float y, float z, Color rayColor, Shape shape, float collisionRadius, char icon = ' ', ConsoleColor color = ConsoleColor.White)
+        public Goal(float x, float y, float z, Color rayColor, Shape shape, float collisionRadius, char icon = ' ', ConsoleColor color = ConsoleColor.White)
             : base(x, y, z, rayColor, shape, collisionRadius, icon, color)
         {
             _collisionRadius = collisionRadius;
@@ -33,11 +33,9 @@ namespace MathForGames3D
         {
             for (int i = 0; i < other.Length; i++)
             {
-                if (other[i] is Enemy)
+                if (other[i] is Enemy && _seconds > 1)
                 {
-                    Scene currentScene = Engine.GetScenes(Engine.CurrentSceneIndex);
-                    currentScene.RemoveActor(this);
-
+                    GameManager.Gameover = true;
                 }
             }
 
