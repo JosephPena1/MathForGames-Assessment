@@ -2,7 +2,10 @@
 
 #### How To Download:
 
-    test
+    Under Releases on the right of the repository, click "MathForGames".
+    Then click "MathForGames.zip", after downloading go to your downloads folder in file explorer.
+    Once you find it, extract the files.
+    Then to run the game, Double-click "MathForGames.exe".
 
 #### Game:
 
