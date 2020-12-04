@@ -2,10 +2,11 @@
 
 #### How To Download:
 
-    Under Releases on the right of the repository, click "MathForGames".
-    Then click "MathForGames.zip", after downloading go to your downloads folder in file explorer.
-    Once you find it, extract the files.
-    Then to run the game, Double-click "MathForGames.exe".
+- Click the link to download:
+https://github.com/JosephPena1/MathForGames-Assessment/releases/download/v0.26/MathForGames-Assessment.zip.
+- Once the download is done locate the file then right-click it and hit extract all.
+- When it's finished extracting, double-click the folder "MathForGames-Assessment".
+- Then Double-click "MathForGames.exe".
 
 #### Game:
 
