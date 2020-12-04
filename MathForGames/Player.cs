@@ -99,6 +99,8 @@ namespace MathForGames
 
         public override void OnCollision(Actor[] actor)
         {
+            Scene scene = Engine.GetCurrentScene();
+            Random randomPos = new Random();
             for (int i = 0; i < actor.Length; i++)
             {
                 switch(GameManager.goalCount)
@@ -111,19 +113,32 @@ namespace MathForGames
                         {
                             case 3:
                                 if (actor[i] is Bullet && _iSeconds > 1)
+                                {
                                     GameManager.livesCount -= 1;
+                                    scene.ScreenShake();
+                                    actor[i].SetTranslate(new Vector2(randomPos.Next(-6, -5), randomPos.Next(-6, -5)));
+                                }
                                 _iSeconds = 0;
                                 break;
 
                             case 2:
                                 if (actor[i] is Bullet && _iSeconds > 1)
+                                {
                                     GameManager.livesCount -= 1;
+                                    scene.ScreenShake();
+                                    actor[i].SetTranslate(new Vector2(randomPos.Next(-6, -5), randomPos.Next(-6, -5)));
+                                }
+                                    
                                 _iSeconds = 0;
                                 break;
 
                             case 1:
                                 if (actor[i] is Bullet && _iSeconds > 1)
+                                {
                                     GameManager.livesCount -= 1;
+                                    scene.ScreenShake();
+                                    actor[i].SetTranslate(new Vector2(randomPos.Next(-6, -5), randomPos.Next(-6, -5)));
+                                }
                                 _iSeconds = 0;
                                 break;
 

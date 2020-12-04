@@ -10,6 +10,7 @@ namespace MathForGames
     {
         private Actor[] _actors;
         private Matrix3 _transform = new Matrix3();
+        private Matrix3 _globalTransform = new Matrix3();
 
         public Matrix3 World{ get => _transform; }
 
@@ -121,6 +122,20 @@ namespace MathForGames
             return actorRemoved;
         }
 
+        public void ScreenShake()
+        {
+            Random randomShake = new Random();
+            switch(randomShake.Next(1, 2))
+            {
+                case 1:
+                    _transform.m13 += 1;
+                    break;
+                case 2:
+                    _transform.m13 -= 1;
+                    break;
+            }
+        }
+
         public virtual void Start()
         {
             for (int i = 0; i < _actors.Length; i++)
@@ -133,6 +148,9 @@ namespace MathForGames
 
         public virtual void Update(float deltaTime)
         {
+            if (_transform.m13 != 0)
+                _transform.m13 /= 2;
+
             for (int i = 0; i < _actors.Length; i++)
             {
                 if (!_actors[i].Started)

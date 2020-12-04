@@ -177,7 +177,7 @@ namespace MathForGames
 
             //Create the actors to add to our scene
             Player player = new Player(0, 0, 0.5f);
-            Enemy enemy1 = new Enemy(0, 0, new Vector2(), new Vector2());
+            Enemy rotator = new Enemy(0, 0, new Vector2(), new Vector2());
             Partner partner1 = new Partner(0, 0, 0.5f);
             Goal goal = new Goal(0, 0, 2, player);
 
@@ -185,20 +185,17 @@ namespace MathForGames
             player.Speed = 1;
             player.SetTranslate(new Vector2(5, 10));
             player.SetScale(1, 1);
-            player.AddChild(enemy1);
-            enemy1.AddChild(partner1);
+            player.AddChild(rotator);
+            rotator.AddChild(partner1);
 
             partner1.SetTranslate(new Vector2(2, 0));
 
             goal.SetScale(3, 3);
             goal.SetTranslate(new Vector2(35, 10));
 
-            /*wall.SetScale(3, 3);
-            wall.SetTranslate(new Vector2(20, 10));*/
-
             //Add actors to the scenes
             scene1.AddActor(player);
-            scene1.AddActor(enemy1);
+            scene1.AddActor(rotator);
             scene1.AddActor(partner1);
             scene1.AddActor(goal);
 

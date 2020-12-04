@@ -133,18 +133,10 @@ namespace MathForGames
 
         public override void OnCollision(Actor[] actor)
         {
-            Random randomPos = new Random();
             for (int i = 0; i < actor.Length; i++)
             {
                 if (actor[i] is Partner && _seconds > 1)
                 {
-                    Scene currentScene = Engine.GetScenes(Engine.CurrentSceneIndex);
-
-                    currentScene.RemoveActor(this);
-
-                    LocalPosition = new Vector2(1000, 1000);
-
-                    //LocalPosition = new Vector2(randomPos.Next(-20, 20), 0, randomPos.Next(-20, 20));
 
                 }
             }
